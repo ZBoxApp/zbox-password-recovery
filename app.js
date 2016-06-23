@@ -9,6 +9,9 @@ var routes = require(path.join(__dirname, "src", "routes", "index"));
 
 var app = express();
 
+// Loading config
+global._config = require(path.join(__dirname, "src", "utils", "config.jsx"))(app.get('env'));
+
 // view engine setup
 app.set('views', path.join(__dirname, "src", "views"));
 app.set('view engine', 'pug');
@@ -19,12 +22,17 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('node-sass-middleware')({
-  src: path.join(__dirname, 'src', 'assets'),
-  dest: path.join(__dirname, 'dist', 'assets'),
-  indentedSyntax: true,
-  sourceMap: true
-}));
+
+if(!_config.css.preCompile){
+    app.use(require('node-sass-middleware')({
+        src: path.join(__dirname, 'src', 'assets'),
+        dest: path.join(__dirname, 'dist', 'assets'),
+        indentedSyntax: true,
+        sourceMap: true,
+        outputStyle: _config.css.compress ? 'compressed' : 'expanded'
+    }));
+}
+
 app.use(express.static(path.join(__dirname, 'dist', 'assets')));
 
 app.use('/', routes);

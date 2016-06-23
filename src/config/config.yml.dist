@@ -1,0 +1,12 @@
+production: &default
+  port: 80
+  css:
+    preCompile: true
+    compress: true
+
+development: &dev
+  <<: *default
+  port: 3000
+  css:
+    preCompile: false
+    compress: false
