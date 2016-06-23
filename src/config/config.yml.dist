@@ -4,6 +4,34 @@ production: &default
     preCompile: true
     compress: true
 
+  mailer:
+    host: __SERVER__
+    from: __EMAIL__
+    username: __USERNAME__
+    password: __PASSWORD__
+
+  zimbra:
+    host: __SERVER__
+    username: __USERNAME__
+    password: __PASSWORD__
+    webmail_url: __ZIMBRA_WEBMAIL_URL__
+
+  twilio:
+    host: __SERVER__
+    username: __USERNAME__
+    password: __PASSWORD__
+
+  recoverMethodAttrNames:
+    sms: __ZIMBRA_SMS_NUMBER__
+    email: __ZIMBRA_OTHER_EMAIL__
+
+  security:
+    token:
+      size: __SIZE__
+      timeout: __TIMEOUT__
+    password:
+      size:
+
 development: &dev
   <<: *default
   port: 3000

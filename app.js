@@ -29,6 +29,7 @@ if(!_config.css.preCompile){
         dest: path.join(__dirname, 'dist', 'assets'),
         indentedSyntax: true,
         sourceMap: true,
+        force: true,
         outputStyle: _config.css.compress ? 'compressed' : 'expanded'
     }));
 }
