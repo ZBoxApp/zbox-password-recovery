@@ -1,0 +1,11 @@
+apps:
+  app1:
+    databaseURI: __DATABASE_URI__
+    cloud: "main.cloud.code.js"
+    masterKey: __MASTER_KEY__
+    endPointAPI: "/parse"
+    serverURL: __SERVER_URL__
+#  app2:
+#    ...
+#  app3:
+#    ...

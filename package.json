@@ -25,6 +25,7 @@
     "js-yaml": "^3.6.1",
     "morgan": "~1.7.0",
     "node-sass-middleware": "0.8.0",
+    "parse-server": "^2.2.13",
     "pug": "^2.0.0-beta3",
     "serve-favicon": "~2.3.0"
   },

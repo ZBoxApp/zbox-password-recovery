@@ -39,3 +39,4 @@ jspm_packages
 .idea/
 dist/
 src/config/config.yml
+src/config/parse.yml
