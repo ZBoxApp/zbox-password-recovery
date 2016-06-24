@@ -1,0 +1,11 @@
+extends layout
+
+block stylesheet
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+block javascripts
+    script(type='text/javascript', src='/javascripts/bundle.min.js')
