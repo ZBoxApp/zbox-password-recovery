@@ -3,6 +3,14 @@
 /**
  * Module dependencies.
  */
+var fs = require('fs');
+
+try{
+  fs.accessSync(".env", fs.R_OK | fs.W_OK);
+  require('dotenv').config();
+}catch(e){
+  //error
+}
 
 var app = require('../app');
 var debug = require('debug')('zbox-password-recovery:server');
@@ -12,7 +20,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(_config.port);
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**

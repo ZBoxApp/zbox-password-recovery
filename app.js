@@ -12,9 +12,6 @@ var routes = require(path.join(__dirname, "src/routes/index"));
 
 var app = express();
 
-// Loading config
-global._config = require(path.join(__dirname, "src/utils/config.jsx"))(app.get('env'));
-
 let parseConf = yaml.safeLoad(fs.readFileSync(path.join(__dirname, "src/config/parse.yml"), "utf-8"));
 
 const instancesAPI = {};
@@ -42,14 +39,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-if (!_config.css.preCompile) {
+if (app.get('env') === 'development') {
     app.use(require('node-sass-middleware')({
         src: path.join(__dirname, 'src', 'assets'),
         dest: path.join(__dirname, 'dist', 'assets'),
         indentedSyntax: true,
         sourceMap: true,
         force: true,
-        outputStyle: _config.css.compress ? 'compressed' : 'expanded'
+        outputStyle: 'expanded'
     }));
 }
 
