@@ -12,13 +12,13 @@ var routes = require(path.join(__dirname, "src/routes/index"));
 
 var app = express();
 
-let parseConf = yaml.safeLoad(fs.readFileSync(path.join(__dirname, "src/config/parse.yml"), "utf-8"));
+var parseApps = require('./src/utils/parseConfig.jsx').getConfig();
 
 const instancesAPI = {};
 
-for (appId in parseConf.apps) {
-    if (parseConf.apps.hasOwnProperty(appId)) {
-        let options = parseConf.apps[appId];
+for (appId in parseApps) {
+    if (parseApps.hasOwnProperty(appId)) {
+        let options = parseApps[appId];
         options['appId'] = appId;
         options.cloud = path.join(__dirname, 'src/cloud/' + options.cloud);
 

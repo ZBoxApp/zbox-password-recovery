@@ -1,10 +1,12 @@
 import React from 'react'
+import ajax from 'superagent';
 import swal from 'sweetalert';
 
 import Step1 from './step1.jsx';
 import Step2 from './step2.jsx';
 import Step3 from './step3.jsx';
 import Step4 from './step4.jsx';
+import * as Utils from '../../utils/utils.jsx';
 
 export default class Root extends React.Component {
     constructor(props) {
@@ -23,6 +25,7 @@ export default class Root extends React.Component {
             };
         }
 
+        this.updateFromInput = this.updateFromInput.bind(this)
         this.getCurrentStep = this.getCurrentStep.bind(this);
         this.toStep2 = this.toStep2.bind(this);
         this.toStep3 = this.toStep3.bind(this);
@@ -42,19 +45,34 @@ export default class Root extends React.Component {
         return false
     }
 
-    toStep2(email) {
-        // Validar existencia usando parse
-        let existe = true;
+    updateFromInput(email) {
+        this.setState(email);
+    }
 
-        if (existe) {
-            this.setState({
-                step: 2,
-                email: "gustavo@zboxapp.com",
-                secondaryEmail: "gperdomor@gmail.com",
-                phone: '3344545657'
-            });
+    toStep2() {
+        let email = this.state.email;
+        let that = this;
+
+        if (Utils.isValidEmail(email)) {
+            ajax.post('/parse/functions/getAccount')
+                .set('X-Parse-Application-Id', 'app1')
+                .set('Content-Type', 'application/json')
+                .send({email: email})
+                .set('Accept', 'application/json')
+                .end(function (err, res) {
+                    if(err || !res.ok){
+                        swal("Error...", res.body.error, "error");
+                    } else {
+                        that.setState({
+                            step: 2,
+                            email: res.body.result.email,
+                            secondaryEmail: res.body.result.secondaryEmail,
+                            phone: res.body.result.phone
+                        });
+                    }
+                });
         } else {
-            // Error
+            swal("Error...", "Debe ingresar un email válido", "error");
         }
     }
 
@@ -91,7 +109,7 @@ export default class Root extends React.Component {
         switch (this.state.step) {
             case 1:
                 return (
-                    <Step1 nextStep={this.toStep2}/>
+                    <Step1 nextStep={this.toStep2} onChange={this.updateFromInput}/>
                 );
                 break;
             case 2:
@@ -102,7 +120,8 @@ export default class Root extends React.Component {
                 break;
             case 3:
                 return (
-                    <Step3 email={this.state.email} reciever={this.state.phone || this.state.secondaryEmail} nextStep={this.toStep4}/>
+                    <Step3 email={this.state.email} reciever={this.state.phone || this.state.secondaryEmail}
+                           nextStep={this.toStep4}/>
                 );
                 break;
             case 4:

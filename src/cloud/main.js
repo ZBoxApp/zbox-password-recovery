@@ -1,23 +1,27 @@
-var ZimbraAdminApi = require('zimbra-admin-api-js');
+const ZimbraAdminApi = require('zimbra-admin-api-js');
+const Utils = require('../utils/Utils.jsx');
 
-/*var zimbraApi = new ZimbraAdminApi({
+const zimbraApi = new ZimbraAdminApi({
     'url': process.env.ZIMBRA_HOST,
     'user': process.env.ZIMBRA_USERNAME,
     'password': process.env.ZIMBRA_PASSWORD
 });
 
-var callback = function(err, data) {
-    if (err){
-        console.log(err);
-    } else {
-        console.log(data);
-    }
-};
+Parse.Cloud.define('getAccount', function (req, res) {
+    let email = req.params.email;
 
-zimbraApi.getAllDomains(callback);*/
-
-Parse.Cloud.define('getUserByName', function(req, res){
-    res.success({});
+    zimbraApi.getAccount(email, (error, data)=> {
+        if(error){
+            res.error(`La cuenta ${email} no existe`);
+        } else {
+            res.success({
+                id: data.id,
+                email: email,
+                secondaryEmail: Utils.protectEmail('gustavo@zboxapp.com'),
+                phone: Utils.protectPhone('+56998587383')
+            });
+        }
+    });
 });
 
 // the way to call this function in REST API is simple

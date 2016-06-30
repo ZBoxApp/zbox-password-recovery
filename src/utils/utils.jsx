@@ -1,11 +1,11 @@
-export function protectPhone(phone) {
+function protectPhone(phone) {
     let a = phone.substring(0, 2);
-    let b = phone.substring(7);
+    let b = phone.substring(9);
 
     return `${a}*****${b}`;
 }
 
-export function protectEmail(email) {
+function protectEmail(email) {
     let split = email.split("@");
     let a = split[0].substring(0, 2);
     let b = split[1][0];
@@ -14,8 +14,14 @@ export function protectEmail(email) {
     return `${a}****@${b}***${c}`;
 }
 
-export function isValidEmail(email){
+function isValidEmail(email) {
     var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     return emailRegex.test(email);
 }
+
+module.exports = {
+    protectPhone: protectPhone,
+    protectEmail: protectEmail,
+    isValidEmail: isValidEmail
+};
