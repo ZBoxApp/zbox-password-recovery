@@ -1,0 +1,109 @@
+// Load Awesome v1.1.0 (http://github.danielcardoso.net/load-awesome/)
+//Copyright 2015 Daniel Cardoso <@DanielCardoso>
+//Licensed under MIT
+
+.la-ball-fall {
+  box-sizing: border-box;
+  color: $white;
+  display: block;
+  font-size: 0;
+  height: 18px;
+  position: relative;
+  width: 54px;
+
+  &.la-dark {
+    color: $la-dark-color;
+  }
+
+  > div {
+    animation: ball-fall 1s ease-in-out infinite;
+    background-color: currentColor;
+    border: 0 solid currentColor;
+    border-radius: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    float: none;
+    height: 10px;
+    margin: 4px;
+    opacity: 0;
+    position: relative;
+    width: 10px;
+
+    &:nth-child(1) {
+      animation-delay: -200ms;
+    }
+
+    &:nth-child(2) {
+      animation-delay: -100ms;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0ms;
+    }
+  }
+
+  &.la-sm {
+    height: 8px;
+    width: 26px;
+
+    > div {
+      height: 4px;
+      margin: 2px;
+      width: 4px;
+    }
+  }
+
+  &.la-2x {
+    height: 36px;
+    width: 108px;
+
+    > div {
+      height: 20px;
+      margin: 8px;
+      width: 20px;
+    }
+  }
+
+  &.la-3x {
+    height: 54px;
+    width: 162px;
+
+    > div {
+      height: 30px;
+      margin: 12px;
+      width: 30px;
+    }
+  }
+}
+
+// Animation
+
+@keyframes ball-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-145%);
+  }
+
+  10% {
+    opacity: .5;
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  90% {
+    opacity: .5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(145%);
+  }
+}

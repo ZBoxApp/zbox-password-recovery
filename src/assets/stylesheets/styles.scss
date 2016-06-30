@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+// Dependancies
+@import '../../../node_modules/bootstrap/dist/css/bootstrap';
+//@import '~jasny-bootstrap/dist/css/jasny-bootstrap.css';
+@import '../../../node_modules/font-awesome/css/font-awesome';
+//@import '~nprogress/nprogress.css';
+//@import '~toastr/build/toastr.css';
+//@import '~animate.css';
+// styles.scss
+@import 'utils/module';
+@import 'layout/module';
+@import 'components/module';
+
+.token-digit {
+  font-size: 24px;
+  font-weight: bold;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  margin: 0 10px 0 10px;
+}

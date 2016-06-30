@@ -1,0 +1,329 @@
+// Panels
+.hpanel {
+  background-color: transparent;
+  border: 0;
+  box-shadow: 0;
+  margin-bottom: 25px;
+
+  &.panel-collapse {
+    > .panel-heading {
+      background: $white;
+      border: 1px solid $border-color;
+      border-color: $border-color;
+      border-radius: 2px;
+      padding: 10px;
+    }
+  }
+
+  > .panel-heading {
+    border: 1px solid transparent;
+    color: inherit;
+    font-weight: 600;
+    padding: 10px 4px;
+    transition: all .3s;
+
+    .heading-buttons {
+      max-width: 50%;
+    }
+  }
+
+  .hbuilt {
+    background: $white;
+    border: 1px solid $border-color;
+    border-color: $border-color;
+    border-radius: 2px;
+    padding: 10px;
+
+    &.panel-heading {
+      border-bottom: 0;
+    }
+
+    > .panel-footer,
+    > .panel-section {
+      background: $color-bright;
+      border: 1px solid $border-color;
+      border-top: 0;
+      color: inherit;
+      font-size: 90%;
+      padding: 10px 15px;
+    }
+  }
+
+  .panel-body {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 2px;
+    padding: 20px;
+    position: relative;
+  }
+
+  &.panel-group {
+    .panel-body:first-child {
+      border-top: 1px solid $border-color;
+    }
+
+    .panel-body {
+      border-top: 0;
+    }
+  }
+
+  .alert {
+    border: 1px solid $border-color;
+    border-bottom: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  &.hgreen {
+    .panel-body {
+      border-top: 2px solid $color-green;
+    }
+  }
+
+  &.hblue {
+    .panel-body {
+      border-top: 2px solid $color-blue;
+    }
+  }
+
+  &.hyellow {
+    .panel-body {
+      border-top: 2px solid $color-yellow;
+    }
+  }
+
+  &.hviolet {
+    .panel-body {
+      border-top: 2px solid $color-violet;
+    }
+  }
+
+  &.horange {
+    .panel-body {
+      border-top: 2px solid $color-orange;
+    }
+  }
+
+  &.hred {
+    .panel-body {
+      border-top: 2px solid $color-red;
+    }
+  }
+
+  &.hreddeep {
+    .panel-body {
+      border-top: 2px solid $color-red-deep;
+    }
+  }
+
+  &.hnavyblue {
+    .panel-body {
+      border-top: 2px solid $color-navy-blue;
+    }
+  }
+
+  &.hbggreen {
+    .panel-body {
+      background: $color-green;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgblue {
+    .panel-body {
+      background: $color-blue;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgyellow {
+    .panel-body {
+      background: $color-yellow;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgviolet {
+    .panel-body {
+      background: $color-violet;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgorange {
+    .panel-body {
+      background: $color-orange;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgred {
+    .panel-body {
+      background: $color-red;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgreddeep {
+    .panel-body {
+      background: $color-red-deep;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.hbgnavyblue {
+    .panel-body {
+      background: $color-navy-blue;
+      border: 0;
+      color: $white;
+    }
+  }
+
+  &.collapsed {
+    .panel-body,
+    .panel-footer {
+      display: none;
+    }
+
+    .fa {
+      &.fa-chevron-up::before {
+        content: '\f078';
+      }
+
+      &.fa-chevron-down::before {
+        content: '\f077';
+      }
+    }
+
+    &.panel-collapse {
+      .panel-body {
+        border: 1px solid $border-color;
+        border-top-width: 0;
+      }
+    }
+
+    .hbuilt {
+      &.panel-heading {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+  }
+
+  &.fullscreen {
+    bottom: 0;
+    left: 0;
+    margin-bottom: 0;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 2030;
+
+    .showhide {
+      display: none;
+    }
+
+    .panel-body {
+      min-height: calc(100% - 77px);
+    }
+  }
+}
+
+.panel-collapse {
+  .panel-body {
+    border: 0;
+  }
+}
+
+.panel-tools {
+  display: inline-block;
+  float: right;
+  margin-top: 0;
+  padding: 0;
+  position: relative;
+
+  a {
+    color: lighten($color-text, 20%);
+    cursor: pointer;
+    margin-left: 5px;
+  }
+}
+
+.panel-group {
+  .panel-heading {
+    background-color: $color-bright;
+  }
+}
+
+.small-header {
+  padding: 0;
+
+  .hpanel {
+    margin-bottom: 0;
+  }
+
+  .panel-body {
+    border-left: 0;
+    border-radius: 0;
+    border-right: 0;
+    border-top: 0;
+    padding: 15px 25px;
+
+    h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    small {
+      color: lighten($color-text, 10%);
+    }
+  }
+}
+
+.panel-body {
+  h5,
+  h4 {
+    font-weight: 600;
+  }
+}
+
+.hbreadcrumb {
+  background-color: $white;
+  font-size: 11px;
+  list-style: none;
+  margin-bottom: 0;
+  margin-top: 6px;
+  padding: 2px 0;
+
+  > li {
+    display: inline-block;
+
+    + li::before {
+      color: $color-navy-blue;
+      padding: 0 5px;
+    }
+  }
+
+  > .active {
+    color: lighten($color-text, 20%);
+  }
+}
+
+.wrapper {
+  padding: 10px 20px;
+}
+
+body {
+  &.fullscreen-panel-mode {
+    overflow-y: hidden;
+  }
+}

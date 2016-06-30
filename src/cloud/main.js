@@ -1,3 +1,21 @@
+var ZimbraAdminApi = require('zimbra-admin-api-js');
+
+/*var zimbraApi = new ZimbraAdminApi({
+    'url': process.env.ZIMBRA_HOST,
+    'user': process.env.ZIMBRA_USERNAME,
+    'password': process.env.ZIMBRA_PASSWORD
+});
+
+var callback = function(err, data) {
+    if (err){
+        console.log(err);
+    } else {
+        console.log(data);
+    }
+};
+
+zimbraApi.getAllDomains(callback);*/
+
 Parse.Cloud.define('getUserByName', function(req, res){
     res.success({});
 });

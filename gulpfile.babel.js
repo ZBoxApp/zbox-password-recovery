@@ -14,7 +14,8 @@ let paths= {
     },
     dist: {
         js: path.join(__dirname, "dist", "assets", "javascripts"),
-        styles: path.join(__dirname, "dist", "assets", "stylesheets")
+        styles: path.join(__dirname, "dist", "assets", "stylesheets"),
+        fonts: path.join(__dirname, "dist", "assets", "fonts")
     }
 };
 
@@ -43,7 +44,12 @@ gulp.task('js-lint', () => {
         .pipe(eslint.failOnError());
 });
 
-gulp.task('styles', function () {
+gulp.task('fonts', function() {
+    return gulp.src(['./node_modules/font-awesome/fonts/*'])
+        .pipe(gulp.dest(paths.dist.fonts));
+});
+
+gulp.task('styles', ['fonts'], function () {
     return gulp.src(path.join(paths.src.styles, "*.s+(a|c)ss"))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}))

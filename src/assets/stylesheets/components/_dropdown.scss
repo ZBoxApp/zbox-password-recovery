@@ -1,0 +1,94 @@
+.dropdown-menu {
+  &.hdropdown {
+    padding: 0;
+    z-index: 1060;
+
+    &.title {
+      border-bottom: 1px solid $border-color;
+      padding: 12px;
+      text-align: center;
+    }
+
+    li {
+      background: lighten($color-background, 3%);
+      border-bottom: 1px solid $border-color;
+      padding: 6px 12px;
+      text-align: left;
+
+      &.summary {
+        background: $white;
+        padding: 6px 12px;
+        text-align: center;
+      }
+
+      > a :hover {
+        background: inherit;
+      }
+    }
+
+    li:hover {
+      background: $color-background;
+    }
+
+    &.notification li {
+      padding: 12px;
+
+      .label {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  &.filedropdown {
+    li {
+      background: lighten($color-background, 3%);
+      border-bottom: 1px solid $border-color;
+      padding: 6px;
+      text-align: left;
+
+      a {
+        margin-right: 10px;
+      }
+
+      > a:hover {
+        background: inherit;
+      }
+    }
+
+    li:hover {
+      background: $color-background;
+    }
+  }
+}
+
+.navbar-nav {
+  > li > a:hover {
+    background: lighten($color-background, 2%);
+    border-bottom: 1px solid $border-color;
+    color: inherit;
+  }
+
+  > li > a:focus {
+    background: lighten($color-background, 2%);
+    border-bottom: 1px solid $border-color;
+    color: inherit;
+  }
+
+  .open > a {
+    background: lighten($color-background, 2%);
+    border-bottom: 1px solid $border-color;
+    color: inherit;
+  }
+
+  .open > a:hover {
+    background: lighten($color-background, 2%);
+    border-bottom: 1px solid $border-color;
+    color: inherit;
+  }
+
+  .open > a:focus {
+    background: lighten($color-background, 2%);
+    border-bottom: 1px solid $border-color;
+    color: inherit;
+  }
+}
