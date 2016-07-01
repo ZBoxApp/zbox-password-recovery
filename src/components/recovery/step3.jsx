@@ -11,8 +11,9 @@ export default class TokenInputForm extends React.Component {
         this.protectReciever = this.protectReciever.bind(this);
     }
 
-    protectReciever(data){
-        if(data.toString().indexOf('@') > 0){
+    protectReciever(data) {
+        console.log('reciever', data);
+        if (data.toString().indexOf('@') > 0) {
             return Utils.protectEmail(data);
         } else {
             return Utils.protectPhone(data);
@@ -31,10 +32,7 @@ export default class TokenInputForm extends React.Component {
                         a {this.protectReciever(this.props.reciever)}</p>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
-                            <input className="token-digit" type="text" maxLength="1"/><i className="fa fa-minus"/>
-                            <input className="token-digit" type="text" maxLength="1"/><i className="fa fa-minus"/>
-                            <input className="token-digit" type="text" maxLength="1"/><i className="fa fa-minus"/>
-                            <input className="token-digit" type="text" maxLength="1"/>
+                            <input className="token-digit" type="text"/>{/*<i className="fa fa-minus"/>*/}
                         </div>
                     </div>
                     <div className="form-group">

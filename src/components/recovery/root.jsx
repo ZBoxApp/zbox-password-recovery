@@ -54,21 +54,29 @@ export default class Root extends React.Component {
         let that = this;
 
         if (Utils.isValidEmail(email)) {
-            ajax.post('/parse/functions/getAccount')
+            ajax.post('/parse/functions/startReset')
                 .set('X-Parse-Application-Id', 'app1')
                 .set('Content-Type', 'application/json')
                 .send({email: email})
                 .set('Accept', 'application/json')
-                .end(function (err, res) {
-                    if(err || !res.ok){
-                        swal("Error...", res.body.error, "error");
+                .end(function (error, response) {
+                    if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
+                        swal("Error...", response.body.error.description, "error");
                     } else {
-                        that.setState({
-                            step: 2,
-                            email: res.body.result.email,
-                            secondaryEmail: res.body.result.secondaryEmail,
-                            phone: res.body.result.phone
-                        });
+                        let data = response.body;
+
+                        let state = {
+                            step: data.result.send ? 3 : 2,
+                            email: data.result.email,
+                            secondaryEmail: data.result.hasOwnProperty('secondaryEmail') ? data.result.secondaryEmail : null,
+                            phone: data.result.hasOwnProperty('phone') ? data.result.phone : null
+                        };
+
+                        if (state.step === 3) {
+                            state.toEmail = state.secondaryEmail !== null
+                        }
+
+                        that.setState(state);
                     }
                 });
         } else {
@@ -77,20 +85,52 @@ export default class Root extends React.Component {
     }
 
     toStep3(email) {
-        if (email) {
-            console.log("Enviar token por email");
-        } else {
-            console.log("Enviar token por SMS");
-        }
+        let that = this;
 
-        this.setState({
-            step: 3
-        });
+        if (email) {
+            ajax.post('/parse/functions/sendEmail')
+                .set('X-Parse-Application-Id', 'app1')
+                .set('Content-Type', 'application/json')
+                .send({email: this.state.email})
+                .set('Accept', 'application/json')
+                .end(function (err, res) {
+                    if (err || !res.ok) {
+                        swal("Error...", res.body.error, "error");
+                    } else {
+                        swal({
+                            title: "Email",
+                            text: "Se ha enviado la información a su email",
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonText: "Aceptar",
+                            closeOnConfirm: true
+                        }, function () {
+                            that.setState({
+                                step: 3,
+                                toEmail: true
+                            });
+                        });
+                    }
+                });
+        } else {
+            swal({
+                title: "SMS",
+                text: "Se ha enviado la información a su teléfono",
+                type: "success",
+                showCancelButton: false,
+                confirmButtonText: "Aceptar",
+                closeOnConfirm: true
+            }, function () {
+                that.setState({
+                    step: 3,
+                    toEmail: false
+                });
+            });
+        }
     }
 
     toStep4() {
         // Validar token
-
         this.setState({
             step: 4
         });
@@ -119,8 +159,10 @@ export default class Root extends React.Component {
                 );
                 break;
             case 3:
+                console.log('state', this.state);
                 return (
-                    <Step3 email={this.state.email} reciever={this.state.phone || this.state.secondaryEmail}
+                    <Step3 email={this.state.email}
+                           reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}
                            nextStep={this.toStep4}/>
                 );
                 break;

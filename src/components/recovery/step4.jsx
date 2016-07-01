@@ -7,12 +7,12 @@ import * as Utils from '../../utils/utils.jsx';
 export default class PasswordChangeForm extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             pass1: '',
             pass2: ''
         };
-        
+
         this.handleNext = this.handleNext.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
@@ -22,7 +22,7 @@ export default class PasswordChangeForm extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ [event.target.name] : event.target.value});
+        this.setState({[event.target.name]: event.target.value});
     }
 
     render() {
