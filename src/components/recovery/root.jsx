@@ -45,8 +45,8 @@ export default class Root extends React.Component {
         return false
     }
 
-    updateFromInput(email) {
-        this.setState(email);
+    updateFromInput(data) {
+        this.setState(data);
     }
 
     toStep2() {
@@ -87,53 +87,56 @@ export default class Root extends React.Component {
     toStep3(email) {
         let that = this;
 
-        if (email) {
-            ajax.post('/parse/functions/sendEmail')
-                .set('X-Parse-Application-Id', 'app1')
-                .set('Content-Type', 'application/json')
-                .send({email: this.state.email})
-                .set('Accept', 'application/json')
-                .end(function (err, res) {
-                    if (err || !res.ok) {
-                        swal("Error...", res.body.error, "error");
-                    } else {
-                        swal({
-                            title: "Email",
-                            text: "Se ha enviado la información a su email",
-                            type: "success",
-                            showCancelButton: false,
-                            confirmButtonText: "Aceptar",
-                            closeOnConfirm: true
-                        }, function () {
-                            that.setState({
-                                step: 3,
-                                toEmail: true
-                            });
+        ajax.post('/parse/functions/sendToken')
+            .set('X-Parse-Application-Id', 'app1')
+            .set('Content-Type', 'application/json')
+            .send({email: this.state.email})
+            .send({type: email ? 'email' : 'sms'})
+            .set('Accept', 'application/json')
+            .end(function (error, response) {
+                if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
+                    swal("Error...", response.body.error.description, "error");
+                } else {
+                    swal({
+                        title: "Token envíado",
+                        text: "Se ha enviado la información a su " + (email ? 'email' : 'sms'),
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonText: "Aceptar",
+                        closeOnConfirm: true
+                    }, function () {
+                        that.setState({
+                            step: 3,
+                            toEmail: email
                         });
-                    }
-                });
-        } else {
-            swal({
-                title: "SMS",
-                text: "Se ha enviado la información a su teléfono",
-                type: "success",
-                showCancelButton: false,
-                confirmButtonText: "Aceptar",
-                closeOnConfirm: true
-            }, function () {
-                that.setState({
-                    step: 3,
-                    toEmail: false
-                });
+                    });
+                }
             });
-        }
     }
 
     toStep4() {
-        // Validar token
-        this.setState({
-            step: 4
-        });
+        ajax.post('/parse/functions/validateToken')
+            .set('X-Parse-Application-Id', 'app1')
+            .set('Content-Type', 'application/json')
+            .send({email: this.state.email})
+            .send({token: this.state.token})
+            .set('Accept', 'application/json')
+            .end(function (error, response) {
+                console.log(response.body);
+
+                if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
+                    console.log('ERROR');
+                    swal("Error...", response.body.error.description, "error");
+                } else {
+                    console.log('SUCCESS');
+
+                    // Validar token
+                    this.setState({
+                        step: 4,
+                        token: response.body.result.token
+                    });
+                }
+            });
     }
 
     finish(pass1, pass2) {
@@ -163,6 +166,7 @@ export default class Root extends React.Component {
                 return (
                     <Step3 email={this.state.email}
                            reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}
+                           onChange={this.updateFromInput}
                            nextStep={this.toStep4}/>
                 );
                 break;
