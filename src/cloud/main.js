@@ -6,6 +6,7 @@ const Utils = require('../utils/Utils.jsx');
 
 const TokenRequest = Parse.Object.extend("TokenRequest");
 const securityStatus = process.env.SECURITY_RESTRINGE_STATUS.split(',');
+const twilio = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_AUTHTOKEN);
 
 const zimbraApi = new ZimbraAdminApi({
     'url': process.env.ZIMBRA_HOST,
@@ -52,7 +53,7 @@ function sendEmail(to, tokenRequest, callback) {
 
     transporter.sendMail({
         from: process.env.MAILER_USERNAME,
-        to: 'gustavo@zboxapp.com',
+        to: to,
         subject: 'RECOVERY EMAIL',
         text: `Ingrese el token de confirmación ${token} en el formulario o haga clic en la siguiente url ${url}`
     }, (error, data) => {
@@ -61,7 +62,15 @@ function sendEmail(to, tokenRequest, callback) {
 }
 
 function sendSMS(to, tokenRequest, callback) {
-    callback();
+    let token = tokenRequest.toJSON().objectId;
+
+    twilio.sendMessage({
+        to: to, // Any number Twilio can deliver to
+        from: process.env.TWILIO_PHONE, // A number you bought from Twilio and can use for outbound communication
+        body: `Ingrese el token de confirmación ${token} en el formulario`
+    }, function (err, responseData) { //this function is executed when a response is received from Twilio
+        callback(err, responseData);
+    });
 }
 
 Parse.Cloud.define('startReset', (request, response) => {
@@ -114,7 +123,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                                                 return response.success({
                                                     send: true,
                                                     email: email,
-                                                    secondaryEmail: Utils.protectEmail('gustavo@zboxapp.com')
+                                                    secondaryEmail: Utils.protectEmail(recoveryMethods[0].value)
                                                 });
                                             }
                                         });
@@ -127,7 +136,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                                                 return response.success({
                                                     send: true,
                                                     email: email,
-                                                    phone: Utils.protectEmail('gustavo@zboxapp.com')
+                                                    phone: Utils.protectPhone(recoveryMethods[0].value)
                                                 });
                                             }
                                         });
@@ -195,7 +204,7 @@ Parse.Cloud.define('sendToken', function (request, response) {
                                             return response.success({
                                                 send: true,
                                                 email: email,
-                                                secondaryEmail: Utils.protectEmail('gustavo@zboxapp.com')
+                                                secondaryEmail: Utils.protectEmail(recoveryMethods[0].value)
                                             });
                                         }
                                     });
@@ -208,7 +217,7 @@ Parse.Cloud.define('sendToken', function (request, response) {
                                             return response.success({
                                                 send: true,
                                                 email: email,
-                                                phone: Utils.protectEmail('gustavo@zboxapp.com')
+                                                phone: Utils.protectPhone(recoveryMethods[1].value)
                                             });
                                         }
                                     });
@@ -255,7 +264,46 @@ Parse.Cloud.define('validateToken', function (request, response) {
             }
         },
         error: function (error) {
-            return response.error(error)
+            return response.error(RESET_ERROR.UNKNOWN)
+        }
+    });
+});
+
+Parse.Cloud.define('changePassword', function (request, response) {
+    let email = request.params.email || '';
+    let token = request.params.token || '';
+    let password = request.params.token || '';
+
+    let query = new Parse.Query(TokenRequest);
+    query.equalTo("account", email);
+    query.equalTo("objectId", token);
+
+    query.find({
+        success: function (results) {
+            if (results.length === 1) {
+                let isExpired = moment().isAfter(results[0].get('expireAt'));
+
+                if (isExpired) {
+                    results[0].destroy();
+                    return response.error(RESET_ERROR.TOKEN_EXPIRED);
+                }
+
+                zimbraApi.getAccount(email, (error, account)=> {
+                    results[0].destroy();
+                    if (error) {
+                        return response.error(RESET_ERROR.NOT_EXIST);
+                    } else {
+                        account.setPassword(password, () => {
+                            return response.success({});
+                        });
+                    }
+                });
+            } else {
+                return response.error(RESET_ERROR.TOKEN_INVALID)
+            }
+        },
+        error: function (error) {
+            return response.error(RESET_ERROR.UNKNOWN)
         }
     });
 });

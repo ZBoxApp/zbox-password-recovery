@@ -32,6 +32,7 @@ export default class Root extends React.Component {
         this.toStep3 = this.toStep3.bind(this);
         this.toStep4 = this.toStep4.bind(this);
         this.finish = this.finish.bind(this);
+        this.resetState = this.resetState.bind(this);
     }
 
     hasValidParameters(query) {
@@ -92,6 +93,23 @@ export default class Root extends React.Component {
                 }
 
                 component.setState(state);
+            }, (component, data)=> {
+                let attemps = window.sessionStorage.getItem('attemps') ? parseInt(window.sessionStorage.getItem('attemps')) : 0;
+                let wait = (attemps + 1) * 10000;
+                window.sessionStorage.setItem('attemps', attemps + 1);
+                component.setState({disabled: true});
+
+                setTimeout(()=> {
+                    clearInterval(interval);
+                    component.setState({disabled: false, wait: 0});
+                }, wait);
+
+                let interval = setInterval(()=> {
+                    wait = wait - 1000;
+                    component.setState({
+                        wait: wait / 1000
+                    });
+                }, 1000);
             });
         } else {
             swal("Error", "Debe ingresar un email válido", "error");
@@ -133,31 +151,43 @@ export default class Root extends React.Component {
                 token: data.token
             };
             component.setState(state);
-        }, (component, error) => {
-            component.setState({
-                step: 1,
-                email: null,
-                secondaryEmail: null,
-                phone: null,
-                toEmail: null
-            })
         });
     }
 
     finish(pass1, pass2) {
         if (pass1 === pass2) {
-            // redireccionar a algun lado
-            swal("Exito...", "Su password ha sido reestablecido exitosamente", "success");
+            let params = {
+                email: this.state.email,
+                token: this.state.token,
+                password: this.state.password
+            };
+
+            this.ajaxCall(this, '/parse/functions/changePassword', params, (component, data)=> {
+                swal("Exito...", "Su password ha sido reestablecido exitosamente", "success");
+                component.resetState();
+            }, (component, error) => {
+                component.resetState();
+            });
         } else {
             swal("Error...", "Las contraseñas ingresadas no coinciden", "error");
         }
+    }
+
+    resetState() {
+        this.setState({
+            step: 1,
+            email: null,
+            secondaryEmail: null,
+            phone: null,
+            toEmail: null
+        })
     }
 
     getCurrentStep() {
         switch (this.state.step) {
             case 1:
                 return (
-                    <Step1 nextStep={this.toStep2} onChange={this.updateFromInput}/>
+                    <Step1 nextStep={this.toStep2} wait={this.state.wait} onChange={this.updateFromInput} disabled={this.state.disabled}/>
                 );
                 break;
             case 2:

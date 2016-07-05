@@ -20,10 +20,18 @@ export default class RequestForm extends React.Component {
     }
 
     handleNext() {
+        if (this.props.disabled) {
+            e.preventDefault();
+            return;
+        }
+        
         this.props.nextStep();
     }
 
     render() {
+        console.log(this.props.wait);
+        let title = this.props.wait > 0 ? `Debe esperar ${this.props.wait} segundos` : 'Continuar';
+
         return (
             <Panel hasHeader={true} title={'¿No recuerdas tu contraseña?'}>
                 <form method="get" className="form-horizontal">
@@ -39,7 +47,7 @@ export default class RequestForm extends React.Component {
                     <div className="form-group text-center">
                         <div className="col-sm-12">
                             <Button
-                                btnAttrs={{onClick: this.handleNext, className: "btn btn-info btn-block", href: "#"}}>Continuar</Button>
+                                btnAttrs={{onClick: this.handleNext, className: "btn btn-info btn-block", disabled: this.props.disabled, href: "#"}}>{title}</Button>
                         </div>
                     </div>
                 </form>
