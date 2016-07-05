@@ -48,12 +48,13 @@ function getRecoveryMethods(account) {
 function sendEmail(to, tokenRequest, callback) {
     let transporter = nodemailer.createTransport(mailerConfig);
     let token = tokenRequest.toJSON().objectId;
+    let url = `http://${process.env.HOSTNAME}${process.env.HOST != 80 ? (':' + process.env.PORT) : ''}?e=${tokenRequest.get('account')}&t=${token}`;
 
     transporter.sendMail({
         from: process.env.MAILER_USERNAME,
         to: 'gustavo@zboxapp.com',
         subject: 'RECOVERY EMAIL',
-        text: `Su codigo de confirmación es ${token}`
+        text: `Ingrese el token de confirmación ${token} en el formulario o haga clic en la siguiente url ${url}`
     }, (error, data) => {
         callback(error, data)
     });
@@ -239,6 +240,12 @@ Parse.Cloud.define('validateToken', function (request, response) {
     query.find({
         success: function (results) {
             if (results.length === 1) {
+                let isExpired = moment().isAfter(results[0].get('expireAt'));
+
+                if (isExpired) {
+                    results[0].destroy();
+                    return response.error(RESET_ERROR.TOKEN_EXPIRED);
+                }
                 return response.success({
                     token: results[0].id,
                     email: email

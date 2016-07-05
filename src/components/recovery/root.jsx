@@ -14,18 +14,19 @@ export default class Root extends React.Component {
 
         if (this.hasValidParameters(this.props.location.query)) {
             this.state = {
-                step: 3,
+                step: 1,
                 email: this.props.location.query.e,
-                secondaryEmail: this.props.location.query.se,
-                phone: this.props.location.query.p
+                token: this.props.location.query.t
             };
+            this.toStep4();
         } else {
             this.state = {
                 step: 1
             };
         }
 
-        this.updateFromInput = this.updateFromInput.bind(this)
+        this.ajaxCall = this.ajaxCall.bind(this);
+        this.updateFromInput = this.updateFromInput.bind(this);
         this.getCurrentStep = this.getCurrentStep.bind(this);
         this.toStep2 = this.toStep2.bind(this);
         this.toStep3 = this.toStep3.bind(this);
@@ -34,8 +35,7 @@ export default class Root extends React.Component {
     }
 
     hasValidParameters(query) {
-        if (query.s == 3 && query.e && query.e.length > 0 && ((query.p && query.p.length > 0) || (query.se && query.se.length > 0))) {
-            //Validar si existe token para los parametros obtenidos de al URL
+        if (query.e && query.e.length > 0 && query.t && query.t.length > 0) {
             let existToken = true;
             if (existToken) {
                 return true;
@@ -49,94 +49,99 @@ export default class Root extends React.Component {
         this.setState(data);
     }
 
-    toStep2() {
-        let email = this.state.email;
-        let that = this;
-
-        if (Utils.isValidEmail(email)) {
-            ajax.post('/parse/functions/startReset')
-                .set('X-Parse-Application-Id', 'app1')
-                .set('Content-Type', 'application/json')
-                .send({email: email})
-                .set('Accept', 'application/json')
-                .end(function (error, response) {
-                    if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
-                        swal("Error...", response.body.error.description, "error");
-                    } else {
-                        let data = response.body;
-
-                        let state = {
-                            step: data.result.send ? 3 : 2,
-                            email: data.result.email,
-                            secondaryEmail: data.result.hasOwnProperty('secondaryEmail') ? data.result.secondaryEmail : null,
-                            phone: data.result.hasOwnProperty('phone') ? data.result.phone : null
-                        };
-
-                        if (state.step === 3) {
-                            state.toEmail = state.secondaryEmail !== null
-                        }
-
-                        that.setState(state);
-                    }
-                });
-        } else {
-            swal("Error...", "Debe ingresar un email válido", "error");
-        }
-    }
-
-    toStep3(email) {
-        let that = this;
-
-        ajax.post('/parse/functions/sendToken')
+    ajaxCall(component, url, params, successCb, errorCb) {
+        ajax.post(url)
             .set('X-Parse-Application-Id', 'app1')
             .set('Content-Type', 'application/json')
-            .send({email: this.state.email})
-            .send({type: email ? 'email' : 'sms'})
             .set('Accept', 'application/json')
+            .send(params)
             .end(function (error, response) {
                 if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
-                    swal("Error...", response.body.error.description, "error");
-                } else {
                     swal({
-                        title: "Token envíado",
-                        text: "Se ha enviado la información a su " + (email ? 'email' : 'sms'),
-                        type: "success",
+                        title: "Error",
+                        text: response.body.error.description,
+                        type: "error",
                         showCancelButton: false,
                         confirmButtonText: "Aceptar",
                         closeOnConfirm: true
                     }, function () {
-                        that.setState({
-                            step: 3,
-                            toEmail: email
-                        });
+                        if (errorCb) {
+                            errorCb(component, response.body.error);
+                        }
                     });
+                } else {
+                    successCb(component, response.body.result);
                 }
             });
     }
 
-    toStep4() {
-        ajax.post('/parse/functions/validateToken')
-            .set('X-Parse-Application-Id', 'app1')
-            .set('Content-Type', 'application/json')
-            .send({email: this.state.email})
-            .send({token: this.state.token})
-            .set('Accept', 'application/json')
-            .end(function (error, response) {
-                console.log(response.body);
+    toStep2() {
+        let email = this.state.email;
 
-                if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
-                    console.log('ERROR');
-                    swal("Error...", response.body.error.description, "error");
-                } else {
-                    console.log('SUCCESS');
+        if (Utils.isValidEmail(email)) {
+            this.ajaxCall(this, '/parse/functions/startReset', {email: email}, (component, data)=> {
+                let state = {
+                    step: data.send ? 3 : 2,
+                    email: data.email,
+                    secondaryEmail: data.hasOwnProperty('secondaryEmail') ? data.secondaryEmail : null,
+                    phone: data.hasOwnProperty('phone') ? data.phone : null
+                };
 
-                    // Validar token
-                    this.setState({
-                        step: 4,
-                        token: response.body.result.token
-                    });
+                if (state.step === 3) {
+                    state.toEmail = state.secondaryEmail !== null
                 }
+
+                component.setState(state);
             });
+        } else {
+            swal("Error", "Debe ingresar un email válido", "error");
+        }
+    }
+
+    toStep3(email) {
+        let params = {
+            email: this.state.email,
+            type: email ? 'email' : 'sms'
+        };
+
+        this.ajaxCall(this, '/parse/functions/sendToken', params, (component, data)=> {
+            swal({
+                title: "Token envíado",
+                text: "Se ha enviado la información a su " + (email ? 'email' : 'teléfono'),
+                type: "success",
+                showCancelButton: false,
+                confirmButtonText: "Aceptar",
+                closeOnConfirm: true
+            }, function () {
+                component.setState({
+                    step: 3,
+                    toEmail: email
+                });
+            });
+        });
+    }
+
+    toStep4() {
+        let params = {
+            email: this.state.email,
+            token: this.state.token
+        };
+
+        this.ajaxCall(this, '/parse/functions/validateToken', params, (component, data)=> {
+            let state = {
+                step: 4,
+                token: data.token
+            };
+            component.setState(state);
+        }, (component, error) => {
+            component.setState({
+                step: 1,
+                email: null,
+                secondaryEmail: null,
+                phone: null,
+                toEmail: null
+            })
+        });
     }
 
     finish(pass1, pass2) {
@@ -162,7 +167,6 @@ export default class Root extends React.Component {
                 );
                 break;
             case 3:
-                console.log('state', this.state);
                 return (
                     <Step3 email={this.state.email}
                            reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}

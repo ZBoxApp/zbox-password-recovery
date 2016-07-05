@@ -51,15 +51,8 @@ SendTokenForm.propTypes = {
         React.PropTypes.string,
         React.PropTypes.number
     ]),
+    secondaryEmail: React.PropTypes.string,
     email: function (props, propName, componentName) {
-        if (!Utils.isValidEmail(props[propName])) {
-            return new Error(
-                'Invalid prop `' + propName + '` supplied to' +
-                ' `' + componentName + '`. Validation failed.'
-            );
-        }
-    },
-    secondaryEmail: function (props, propName, componentName) {
         if (!Utils.isValidEmail(props[propName])) {
             return new Error(
                 'Invalid prop `' + propName + '` supplied to' +
@@ -68,4 +61,4 @@ SendTokenForm.propTypes = {
         }
     }
 };
- 
+
