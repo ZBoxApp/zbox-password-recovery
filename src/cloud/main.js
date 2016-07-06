@@ -289,7 +289,7 @@ Parse.Cloud.define('changePassword', function (request, response) {
                     return response.error(RESET_ERROR.TOKEN_EXPIRED);
                 }
 
-                if(password.length < parseInt(process.env.SECURITY_PASSWORD_POLICY_SIZE)){
+                if (password.length < parseInt(process.env.SECURITY_PASSWORD_POLICY_SIZE)) {
                     results[0].destroy();
                     return response.error(RESET_ERROR.PASSWORD_SHORT);
                 }
