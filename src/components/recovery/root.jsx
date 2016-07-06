@@ -151,6 +151,8 @@ export default class Root extends React.Component {
                 token: data.token
             };
             component.setState(state);
+        }, (component, error) => {
+            component.resetState();
         });
     }
 
@@ -163,8 +165,17 @@ export default class Root extends React.Component {
             };
 
             this.ajaxCall(this, '/parse/functions/changePassword', params, (component, data)=> {
-                swal("Exito...", "Su password ha sido reestablecido exitosamente", "success");
-                component.resetState();
+                swal({
+                    title: "Exito",
+                    text: "Su password ha sido reestablecido exitosamente. A continuación sera redireccionado a su webmail",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonText: "Aceptar",
+                    closeOnConfirm: true
+                }, function () {
+                    component.resetState();
+                    window.location = data.redirect;
+                });
             }, (component, error) => {
                 component.resetState();
             });
@@ -187,7 +198,8 @@ export default class Root extends React.Component {
         switch (this.state.step) {
             case 1:
                 return (
-                    <Step1 nextStep={this.toStep2} wait={this.state.wait} onChange={this.updateFromInput} disabled={this.state.disabled}/>
+                    <Step1 nextStep={this.toStep2} wait={this.state.wait} onChange={this.updateFromInput}
+                           disabled={this.state.disabled}/>
                 );
                 break;
             case 2:

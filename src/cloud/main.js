@@ -294,7 +294,9 @@ Parse.Cloud.define('changePassword', function (request, response) {
                         return response.error(RESET_ERROR.NOT_EXIST);
                     } else {
                         account.setPassword(password, () => {
-                            return response.success({});
+                            return response.success({
+                                redirect: process.env.ZIMBRA_WEBMAIL_URL
+                            });
                         });
                     }
                 });
