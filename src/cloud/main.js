@@ -33,7 +33,8 @@ const RESET_ERROR = {
     SMS: {code: 'ZB005', description: 'Error enviando SMS'},
     UNAUTHORIZED: {code: 'ZB006', description: 'No esta autorizado para realizar esta operación'},
     TOKEN_EXPIRED: {code: 'ZB007', description: 'El token ha expirado'},
-    TOKEN_INVALID: {code: 'ZB008', description: 'El token no es válido'}
+    TOKEN_INVALID: {code: 'ZB008', description: 'El token no es válido'},
+    PASSWORD_SHORT: {code: 'ZB009', description: 'El password ingresado es demasiado corto'}
 };
 
 function getRecoveryMethods(account) {
@@ -272,7 +273,7 @@ Parse.Cloud.define('validateToken', function (request, response) {
 Parse.Cloud.define('changePassword', function (request, response) {
     let email = request.params.email || '';
     let token = request.params.token || '';
-    let password = request.params.token || '';
+    let password = request.params.password || '';
 
     let query = new Parse.Query(TokenRequest);
     query.equalTo("account", email);
@@ -286,6 +287,11 @@ Parse.Cloud.define('changePassword', function (request, response) {
                 if (isExpired) {
                     results[0].destroy();
                     return response.error(RESET_ERROR.TOKEN_EXPIRED);
+                }
+
+                if(password.length < parseInt(process.env.SECURITY_PASSWORD_POLICY_SIZE)){
+                    results[0].destroy();
+                    return response.error(RESET_ERROR.PASSWORD_SHORT);
                 }
 
                 zimbraApi.getAccount(email, (error, account)=> {

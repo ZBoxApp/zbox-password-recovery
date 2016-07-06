@@ -11,24 +11,34 @@ export default class SendTokenForm extends React.Component {
         this.handleSendSMS = this.handleSendSMS.bind(this);
     }
 
-    handleSendEmail() {
+    handleSendEmail(e) {
+        if (this.props.ajaxInProgress) {
+            e.preventDefault();
+            return;
+        }
+
         this.props.nextStep(true);
     }
 
-    handleSendSMS() {
+    handleSendSMS(e) {
+        if (this.props.ajaxInProgress) {
+            e.preventDefault();
+            return;
+        }
+
         this.props.nextStep(false);
     }
 
     render() {
         return (
             <Panel hasHeader={true} title={this.props.email}>
-                <form method="get" className="form-horizontal">
+                <form method="post" className="form-horizontal">
                     <p className="text-center">Selecciona un método para recibir un código de verificación y poder
                         cambiar tu contraseña</p>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <Button
-                                btnAttrs={{onClick: this.handleSendEmail, className: "btn btn-info btn-block", href: "#"}}>Enviar
+                                btnAttrs={{onClick: this.handleSendEmail, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Enviar
                                 correo a {Utils.protectEmail(this.props.secondaryEmail)}</Button>
                         </div>
                     </div>
@@ -36,7 +46,7 @@ export default class SendTokenForm extends React.Component {
                     <div className="form-group">
                         <div className="col-sm-12">
                             <Button
-                                btnAttrs={{onClick: this.handleSendSMS, className: "btn btn-info btn-block", href: "#"}}>Enviar
+                                btnAttrs={{onClick: this.handleSendSMS, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Enviar
                                 SMS a {Utils.protectPhone(this.props.phone)}</Button>
                         </div>
                     </div>

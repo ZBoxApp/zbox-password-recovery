@@ -12,6 +12,10 @@
 @import 'layout/module';
 @import 'components/module';
 
+body {
+  margin-top: 50px;
+}
+
 .token-digit {
   font-size: 24px;
   font-weight: bold;
@@ -19,4 +23,16 @@
   height: 45px;
   text-align: center;
   margin: 0 5px 0 5px;
+}
+
+meter {
+  width: 100%;
+  padding-top: 5px;
+  display: block;
+}
+
+#password-form {
+  label {
+    font-weight: normal !important;
+  }
 }

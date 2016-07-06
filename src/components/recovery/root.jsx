@@ -15,13 +15,15 @@ export default class Root extends React.Component {
         if (this.hasValidParameters(this.props.location.query)) {
             this.state = {
                 step: 1,
+                ajaxInProgress: false,
                 email: this.props.location.query.e,
                 token: this.props.location.query.t
             };
             this.toStep4();
         } else {
             this.state = {
-                step: 1
+                step: 1,
+                ajaxInProgress: false
             };
         }
 
@@ -51,12 +53,20 @@ export default class Root extends React.Component {
     }
 
     ajaxCall(component, url, params, successCb, errorCb) {
+        component.setState({
+            ajaxInProgress: true
+        });
+
         ajax.post(url)
             .set('X-Parse-Application-Id', 'app1')
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .send(params)
             .end(function (error, response) {
+                component.setState({
+                    ajaxInProgress: false
+                });
+
                 if (error || !response.ok || (response.hasOwnProperty('body') && response.body.hasOwnProperty('error'))) {
                     swal({
                         title: "Error",
@@ -81,6 +91,8 @@ export default class Root extends React.Component {
 
         if (Utils.isValidEmail(email)) {
             this.ajaxCall(this, '/parse/functions/startReset', {email: email}, (component, data)=> {
+                window.sessionStorage.setItem('attemps', 0);
+
                 let state = {
                     step: data.send ? 3 : 2,
                     email: data.email,
@@ -180,7 +192,7 @@ export default class Root extends React.Component {
                 component.resetState();
             });
         } else {
-            swal("Error...", "Las contraseñas ingresadas no coinciden", "error");
+            swal("Error", "Las contraseñas ingresadas no coinciden", "error");
         }
     }
 
@@ -199,26 +211,27 @@ export default class Root extends React.Component {
             case 1:
                 return (
                     <Step1 nextStep={this.toStep2} wait={this.state.wait} onChange={this.updateFromInput}
-                           disabled={this.state.disabled}/>
+                           disabled={this.state.disabled} ajaxInProgress={this.state.ajaxInProgress}/>
                 );
                 break;
             case 2:
                 return (
                     <Step2 email={this.state.email} secondaryEmail={this.state.secondaryEmail}
-                           phone={this.state.phone} nextStep={this.toStep3}/>
+                           phone={this.state.phone} nextStep={this.toStep3} ajaxInProgress={this.state.ajaxInProgress}/>
                 );
                 break;
             case 3:
                 return (
                     <Step3 email={this.state.email}
                            reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}
-                           onChange={this.updateFromInput}
+                           onChange={this.updateFromInput} ajaxInProgress={this.state.ajaxInProgress}
                            nextStep={this.toStep4}/>
                 );
                 break;
             case 4:
                 return (
-                    <Step4 email={this.state.email} nextStep={this.finish}/>
+                    <Step4 email={this.state.email} nextStep={this.finish} onChange={this.updateFromInput}
+                           ajaxInProgress={this.state.ajaxInProgress}/>
                 );
                 break;
         }

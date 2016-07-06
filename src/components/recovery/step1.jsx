@@ -19,22 +19,21 @@ export default class RequestForm extends React.Component {
         this.props.onChange({email: event.target.value});
     }
 
-    handleNext() {
-        if (this.props.disabled) {
+    handleNext(e) {
+        if (this.props.disabled || this.props.ajaxInProgress) {
             e.preventDefault();
             return;
         }
-        
+
         this.props.nextStep();
     }
 
     render() {
-        console.log(this.props.wait);
         let title = this.props.wait > 0 ? `Debe esperar ${this.props.wait} segundos` : 'Continuar';
 
         return (
             <Panel hasHeader={true} title={'¿No recuerdas tu contraseña?'}>
-                <form method="get" className="form-horizontal">
+                <form method="post" className="form-horizontal">
                     <p className="text-center">Ingresa tu email para comenzar</p>
                     <p className="text-center">Este es el lugar indicado para restablecer una contraseña olvidada, o
                         desbloquear tu cuenta</p>
@@ -47,7 +46,7 @@ export default class RequestForm extends React.Component {
                     <div className="form-group text-center">
                         <div className="col-sm-12">
                             <Button
-                                btnAttrs={{onClick: this.handleNext, className: "btn btn-info btn-block", disabled: this.props.disabled, href: "#"}}>{title}</Button>
+                                btnAttrs={{onClick: this.handleNext, className: "btn btn-info btn-block", disabled: this.props.disabled || this.props.ajaxInProgress, href: "#"}}>{title}</Button>
                         </div>
                     </div>
                 </form>
