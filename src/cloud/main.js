@@ -4,7 +4,7 @@ const moment = require('moment');
 const nodemailer = require('nodemailer');
 const ZimbraAdminApi = require('zimbra-admin-api-js');
 
-const Utils = require('../utils/Utils.jsx');
+const Utils = require('../utils/utils.jsx');
 
 const TokenRequest = Parse.Object.extend("TokenRequest");
 const securityStatus = process.env.SECURITY_RESTRINGE_STATUS.split(',');
