@@ -1,3 +1,5 @@
+"use strict";
+
 import autoprefixer from 'gulp-autoprefixer';
 import concat from 'gulp-concat';
 import eslint from 'gulp-eslint';

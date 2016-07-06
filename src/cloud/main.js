@@ -1,3 +1,5 @@
+"use strict";
+
 const moment = require('moment');
 const nodemailer = require('nodemailer');
 const ZimbraAdminApi = require('zimbra-admin-api-js');

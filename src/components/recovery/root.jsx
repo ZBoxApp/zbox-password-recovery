@@ -1,3 +1,5 @@
+"use strict";
+
 import React from 'react'
 import ajax from 'superagent';
 import swal from 'sweetalert';

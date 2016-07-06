@@ -1,3 +1,5 @@
+"use strict";
+
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var express = require('express');
