@@ -6,27 +6,19 @@ var fs = require('fs');
 var logger = require('morgan');
 var parseServer = require('parse-server').ParseServer;
 var path = require('path');
-var yaml = require('js-yaml');
 
 var routes = require(path.join(__dirname, "src/routes/index"));
 
 var app = express();
 
-var parseApps = require('./src/utils/parseConfig.jsx').getConfig();
-
-const instancesAPI = {};
-
-for (appId in parseApps) {
-    if (parseApps.hasOwnProperty(appId)) {
-        let options = parseApps[appId];
-        options['appId'] = appId;
-        options.cloud = path.join(__dirname, 'src/cloud/' + options.cloud);
-
-        instancesAPI[appId] = new parseServer(options);
-
-        app.use(options.endPointAPI, instancesAPI[appId]);
-    }
-}
+app.use(process.env.PARSE_ENDPOINT_API, new parseServer({
+    appId: 'APPRESET',
+    databaseURI: process.env.PARSE_DATABASE,
+    cloud: path.join(__dirname, 'src/cloud/main.js'),
+    masterKey: process.env.PARSE_MASTER_KEY,
+    restAPIKey: process.env.PARSE_REST_API_KEY,
+    serverURL: process.env.PARSE_SERVER_URL
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, "src", "views"));

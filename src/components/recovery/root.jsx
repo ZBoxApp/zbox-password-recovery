@@ -58,7 +58,7 @@ export default class Root extends React.Component {
         });
 
         ajax.post(url)
-            .set('X-Parse-Application-Id', 'app1')
+            .set('X-Parse-Application-Id', 'APPRESET')
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .send(params)
