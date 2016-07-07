@@ -1,0 +1,16 @@
+#!/bin/bash
+
+[ -d "/usr/src/app" ] && exit 0
+
+set -e
+
+echo "---> Installing application source"
+cp -Rf /tmp/src/. ./
+
+echo "---> Building your Node application from source"
+npm install -d
+
+npm run build
+
+# Fix source directory permissions
+fix-permissions ./
