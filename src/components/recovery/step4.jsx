@@ -17,9 +17,17 @@ export default class PasswordChangeForm extends React.Component {
         };
 
         this.handleNext = this.handleNext.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
+    handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleNext();
+        }
+    }
+    
     handleNext(e) {
         if (this.props.ajaxInProgress) {
             e.preventDefault();
@@ -43,12 +51,12 @@ export default class PasswordChangeForm extends React.Component {
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
                             <input className="form-control" name="pass1" type="password" value={this.state.pass1}
-                                   onChange={this.handleChange}/>
+                                   onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
-                            <PasswordStrengthMeter className="form-control" name="password"
+                            <PasswordStrengthMeter className="form-control" name="password" onKeyPress={this.handleKeyPress}
                                                    passwordText={"Confirme Contraseña"} hasLabel={true}
                                                    value={this.state.password} onChange={this.handleChange}/>
 

@@ -12,6 +12,7 @@ export default class RequestForm extends React.Component {
         this.state = {value: ''};
 
         this.handleNext = this.handleNext.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -19,6 +20,13 @@ export default class RequestForm extends React.Component {
         this.setState({value: event.target.value});
 
         this.props.onChange({email: event.target.value});
+    }
+
+    handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleNext();
+        }
     }
 
     handleNext(e) {
@@ -35,14 +43,14 @@ export default class RequestForm extends React.Component {
 
         return (
             <Panel hasHeader={true} title={'¿No recuerdas tu contraseña?'}>
-                <form method="post" className="form-horizontal">
+                <form method="post" className="form-horizontal" noValidate>
                     <p className="text-center">Ingresa tu email para comenzar</p>
                     <p className="text-center">Este es el lugar indicado para restablecer una contraseña olvidada, o
                         desbloquear tu cuenta</p>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <input type="email" required className="form-control" value={this.state.value}
-                                   onChange={this.handleChange}/>
+                                   onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
                         </div>
                     </div>
                     <div className="form-group text-center">

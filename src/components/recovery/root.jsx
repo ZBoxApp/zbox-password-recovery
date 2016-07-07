@@ -165,8 +165,6 @@ export default class Root extends React.Component {
                 token: data.token
             };
             component.setState(state);
-        }, (component, error) => {
-            component.resetState();
         });
     }
 

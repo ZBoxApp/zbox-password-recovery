@@ -9,7 +9,9 @@ import * as Utils from '../../utils/utils.jsx';
 export default class TokenInputForm extends React.Component {
     constructor(props) {
         super(props);
+
         this.handleNext = this.handleNext.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.protectReciever = this.protectReciever.bind(this);
     }
@@ -28,6 +30,13 @@ export default class TokenInputForm extends React.Component {
         this.props.onChange({token: event.target.value});
     }
 
+    handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.handleNext();
+        }
+    }
+
     handleNext(e) {
         if (this.props.ajaxInProgress) {
             e.preventDefault();
@@ -40,13 +49,13 @@ export default class TokenInputForm extends React.Component {
     render() {
         return (
             <Panel hasHeader={true} title={this.props.email}>
-                <form method="post" className="form-horizontal">
+                <form method="post" className="form-horizontal" noValidate>
                     <p className="text-center">Ingresa el código que hemos enviado
                         a {this.protectReciever(this.props.reciever)}</p>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
-                            <input className="token-digit" type="text"
-                                   onChange={this.handleChange}/>{/*<i className="fa fa-minus"/>*/}
+                            <input className="token-digit" type="text" onKeyPress={this.handleKeyPress}
+                                   onChange={this.handleChange}/>
                         </div>
                     </div>
                     <div className="form-group">

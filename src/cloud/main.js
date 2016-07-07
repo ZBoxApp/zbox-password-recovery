@@ -42,9 +42,14 @@ const RESET_ERROR = {
 function getRecoveryMethods(account) {
     let methods = [];
 
-    // Simulados (Primero agregar el email  luego el telefono)
-    methods.push({type: 'email', value: 'gustavo@zboxapp.com'});
-    methods.push({type: 'phone', value: '+56998587383'});
+    // Primero agregar el email  luego el telefono
+    if (account.attrs.st) {
+        methods.push({type: 'email', value: account.attrs.st});
+    }
+
+    if (account.attrs.mobile) {
+        methods.push({type: 'phone', value: account.attrs.mobile});
+    }
 
     return methods;
 }
@@ -301,6 +306,8 @@ Parse.Cloud.define('changePassword', function (request, response) {
                     if (error) {
                         return response.error(RESET_ERROR.NOT_EXIST);
                     } else {
+                        zimbraApi.modifyAccount(account.id, {zimbraAccountStatus: 'active'});
+
                         account.setPassword(password, () => {
                             return response.success({
                                 redirect: process.env.ZIMBRA_WEBMAIL_URL
