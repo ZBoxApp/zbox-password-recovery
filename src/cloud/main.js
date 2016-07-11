@@ -16,6 +16,10 @@ const zimbraApi = new ZimbraAdminApi({
     'password': process.env.ZIMBRA_PASSWORD
 });
 
+const ZIMLET_NAME = 'zbox_pr';
+const ZIMLET_PARAM_EMAIL = 'recovery_email';
+const ZIMLET_PARAM_PHONE = 'recovery_phone';
+
 const mailerConfig = {
     host: process.env.MAILER_SMTP,
     port: process.env.MAILER_PORT,
@@ -40,15 +44,24 @@ const RESET_ERROR = {
 };
 
 function getRecoveryMethods(account) {
-    let methods = [];
+    let methods = {};
 
-    // Primero agregar el email  luego el telefono
-    if (account.attrs.st) {
-        methods.push({type: 'email', value: account.attrs.st});
-    }
+    if (account.attrs.hasOwnProperty('zimbraZimletUserProperties')) {
+        let obj = account.attrs.zimbraZimletUserProperties;
 
-    if (account.attrs.mobile) {
-        methods.push({type: 'phone', value: account.attrs.mobile});
+        Object.keys(obj).map(k=> {
+            let item = obj[k].split(':');
+            if (item[0] == ZIMLET_NAME) {
+                switch (item[1]) {
+                    case ZIMLET_PARAM_PHONE:
+                        methods['phone'] = item[2];
+                        break;
+                    case ZIMLET_PARAM_EMAIL:
+                        methods['email'] = item[2];
+                        break;
+                }
+            }
+        });
     }
 
     return methods;
@@ -62,7 +75,7 @@ function sendEmail(to, tokenRequest, callback) {
     transporter.sendMail({
         from: process.env.MAILER_USERNAME,
         to: to,
-        subject: 'RECOVERY EMAIL',
+        subject: 'zBox Recovery',
         text: `Ingrese el token de confirmación ${token} en el formulario o haga clic en la siguiente url ${url}`
     }, (error, data) => {
         callback(error, data)
@@ -83,7 +96,7 @@ function sendSMS(to, tokenRequest, callback) {
 
 Parse.Cloud.define('startReset', (request, response) => {
     let email = request.params.email || '';
-    zimbraApi.getAccount(email, (error, account)=> {
+    zimbraApi.getAccount(email, (error, account) => {
         if (error) {
             return response.error(RESET_ERROR.NOT_EXIST);
         } else {
@@ -96,7 +109,7 @@ Parse.Cloud.define('startReset', (request, response) => {
             query.equalTo("account", email);
 
             query.find({
-                success: function (results) {
+                success: (results) => {
                     // Hay un token de recuperación para esa cuenta
                     if (results.length !== 0) {
                         let isExpired = moment().isAfter(results[0].get('expireAt'));
@@ -111,7 +124,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                     // Validar si hay metodos de recuperación
                     let recoveryMethods = getRecoveryMethods(account);
 
-                    if (recoveryMethods.length == 0) {
+                    if (Object.keys(recoveryMethods).length == 0) {
                         return response.error(RESET_ERROR.NO_RECOVERY_METHODS);
                     }
 
@@ -121,43 +134,40 @@ Parse.Cloud.define('startReset', (request, response) => {
                     tokenRequest.set('expireAt', moment().add(process.env.SECURITY_TOKEN_TIMEOUT || 10, 'm').toDate());
                     tokenRequest.save(null, {
                         success: (tokenRequest) => {
-                            if (recoveryMethods.length === 1) {
-                                switch (recoveryMethods[0].type) {
-                                    case 'email':
-                                        sendEmail(recoveryMethods[0].value, tokenRequest, (error, data) => {
-                                            if (error) {
-                                                return response.error(RESET_ERROR.SMTP);
-                                            } else {
-                                                return response.success({
-                                                    send: true,
-                                                    email: email,
-                                                    secondaryEmail: Utils.protectEmail(recoveryMethods[0].value)
-                                                });
-                                            }
-                                        });
-                                        break;
-                                    case 'phone':
-                                        sendSMS(recoveryMethods[0].value, tokenRequest, (error, data) => {
-                                            if (error) {
-                                                return response.error(RESET_ERROR.SMS);
-                                            } else {
-                                                return response.success({
-                                                    send: true,
-                                                    email: email,
-                                                    phone: Utils.protectPhone(recoveryMethods[0].value)
-                                                });
-                                            }
-                                        });
-                                        break;
-                                    default:
-                                        return response.error(RESET_ERROR.UNKNOWN);
+                            if (Object.keys(recoveryMethods).length === 1) {
+                                if (recoveryMethods.hasOwnProperty('email')) {
+                                    sendEmail(recoveryMethods.email, tokenRequest, (error, data) => {
+                                        if (error) {
+                                            return response.error(RESET_ERROR.SMTP);
+                                        } else {
+                                            return response.success({
+                                                send: true,
+                                                email: email,
+                                                secondaryEmail: Utils.protectEmail(recoveryMethods.email)
+                                            });
+                                        }
+                                    });
+                                } else if (recoveryMethods.hasOwnProperty('phone')) {
+                                    sendSMS(recoveryMethods.phone, tokenRequest, (error, data) => {
+                                        if (error) {
+                                            return response.error(RESET_ERROR.SMS);
+                                        } else {
+                                            return response.success({
+                                                send: true,
+                                                email: email,
+                                                phone: Utils.protectPhone(recoveryMethods.phone)
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    return response.error(RESET_ERROR.UNKNOWN);
                                 }
                             } else {
                                 return response.success({
                                     email: email,
                                     send: false,
-                                    secondaryEmail: Utils.protectEmail(recoveryMethods[0].value),
-                                    phone: Utils.protectPhone(recoveryMethods[1].value)
+                                    secondaryEmail: Utils.protectEmail(recoveryMethods.email),
+                                    phone: Utils.protectPhone(recoveryMethods.phone)
                                 });
                             }
                         },
@@ -174,7 +184,7 @@ Parse.Cloud.define('startReset', (request, response) => {
     });
 });
 
-Parse.Cloud.define('sendToken', function (request, response) {
+Parse.Cloud.define('sendToken', (request, response) => {
     let email = request.params.email || '';
     let type = request.params.type || '';
 
@@ -191,7 +201,7 @@ Parse.Cloud.define('sendToken', function (request, response) {
             query.equalTo("account", email);
 
             query.find({
-                success: function (results) {
+                success: (results) => {
                     // Hay un token de recuperación para esa cuenta
                     if (results.length === 1) {
                         let tokenRequest = results[0];
@@ -205,27 +215,27 @@ Parse.Cloud.define('sendToken', function (request, response) {
                             let recoveryMethods = getRecoveryMethods(account);
                             switch (type) {
                                 case 'email':
-                                    sendEmail(recoveryMethods[0].value, tokenRequest, (error, data) => {
+                                    sendEmail(recoveryMethods.email, tokenRequest, (error, data) => {
                                         if (error) {
                                             return response.error(RESET_ERROR.SMTP);
                                         } else {
                                             return response.success({
                                                 send: true,
                                                 email: email,
-                                                secondaryEmail: Utils.protectEmail(recoveryMethods[0].value)
+                                                secondaryEmail: Utils.protectEmail(recoveryMethods.email)
                                             });
                                         }
                                     });
                                     break;
                                 case 'sms':
-                                    sendSMS(recoveryMethods[1].value, tokenRequest, (error, data) => {
+                                    sendSMS(recoveryMethods.phone, tokenRequest, (error, data) => {
                                         if (error) {
                                             return response.error(RESET_ERROR.SMS);
                                         } else {
                                             return response.success({
                                                 send: true,
                                                 email: email,
-                                                phone: Utils.protectPhone(recoveryMethods[1].value)
+                                                phone: Utils.protectPhone(recoveryMethods.phone)
                                             });
                                         }
                                     });
@@ -238,7 +248,7 @@ Parse.Cloud.define('sendToken', function (request, response) {
                         return response.error(RESET_ERROR.UNKNOWN);
                     }
                 },
-                error: function (error) {
+                error: (error) => {
                     return response.error(RESET_ERROR.UNKNOWN);
                 }
             });
@@ -246,7 +256,7 @@ Parse.Cloud.define('sendToken', function (request, response) {
     });
 });
 
-Parse.Cloud.define('validateToken', function (request, response) {
+Parse.Cloud.define('validateToken', (request, response) => {
     let email = request.params.email || '';
     let token = request.params.token || '';
 
@@ -255,7 +265,7 @@ Parse.Cloud.define('validateToken', function (request, response) {
     query.equalTo("objectId", token);
 
     query.find({
-        success: function (results) {
+        success: (results) => {
             if (results.length === 1) {
                 let isExpired = moment().isAfter(results[0].get('expireAt'));
 
@@ -271,13 +281,13 @@ Parse.Cloud.define('validateToken', function (request, response) {
                 return response.error(RESET_ERROR.TOKEN_INVALID)
             }
         },
-        error: function (error) {
+        error: (error) => {
             return response.error(RESET_ERROR.UNKNOWN)
         }
     });
 });
 
-Parse.Cloud.define('changePassword', function (request, response) {
+Parse.Cloud.define('changePassword', (request, response) => {
     let email = request.params.email || '';
     let token = request.params.token || '';
     let password = request.params.password || '';
@@ -287,7 +297,7 @@ Parse.Cloud.define('changePassword', function (request, response) {
     query.equalTo("objectId", token);
 
     query.find({
-        success: function (results) {
+        success: (results) => {
             if (results.length === 1) {
                 let isExpired = moment().isAfter(results[0].get('expireAt'));
 
@@ -319,7 +329,7 @@ Parse.Cloud.define('changePassword', function (request, response) {
                 return response.error(RESET_ERROR.TOKEN_INVALID)
             }
         },
-        error: function (error) {
+        error: (error) => {
             return response.error(RESET_ERROR.UNKNOWN)
         }
     });
