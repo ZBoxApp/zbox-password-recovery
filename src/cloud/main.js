@@ -76,9 +76,12 @@ function getRecoveryMethods(account) {
 function sendEmail(to, name, tokenRequest, callback) {
     let transporter = nodemailer.createTransport(mailerConfig);
     let token = tokenRequest.toJSON().objectId;
-    let url = `https://${process.env.HOSTNAME}?e=${tokenRequest.get('account')}&t=${token}`;
-    let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT/60 : process.env.SECURITY_TOKEN_TIMEOUT
+    let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT/60 : process.env.SECURITY_TOKEN_TIMEOUT;
     let units = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? 'horas' : 'minutos';
+
+    token = `${token.substr(0,5)}-${token.substr(5,token.length)}`;
+
+    let url = `https://${process.env.HOSTNAME}?e=${tokenRequest.get('account')}&t=${token}`;
 
     let html = `
         <p>Hola ${name},<br/>

@@ -19,7 +19,7 @@ export default class Root extends React.Component {
                 step: 1,
                 ajaxInProgress: false,
                 email: this.props.location.query.e,
-                token: this.props.location.query.t
+                token: this.props.location.query.t.replace('-', '')
             };
             this.toStep4();
         } else {

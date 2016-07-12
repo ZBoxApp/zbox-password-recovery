@@ -10,6 +10,11 @@ export default class TokenInputForm extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            part1: '',
+            part2: ''
+        };
+
         this.handleNext = this.handleNext.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -25,9 +30,11 @@ export default class TokenInputForm extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value});
+        let that = this;
 
-        this.props.onChange({token: event.target.value});
+        that.setState({[event.target.name]: event.target.value}, () => {
+            this.props.onChange({token: that.state.part1 + that.state.part2});
+        });
     }
 
     handleKeyPress(e) {
@@ -54,14 +61,22 @@ export default class TokenInputForm extends React.Component {
                         a {this.protectReciever(this.props.reciever)}</p>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
-                            <input className="token-digit" type="text" onKeyPress={this.handleKeyPress}
-                                   onChange={this.handleChange}/>
+                            <input className="token-digit" type="text" onKeyPress={this.handleKeyPress} maxLength="5"
+                                   onChange={this.handleChange} name="part1"/><i className="fa fa-minus"/>
+                            <input className="token-digit" type="text" onKeyPress={this.handleKeyPress} maxLength="5"
+                                   onChange={this.handleChange} name="part2"/>
+                            <span class="help-block">Los campos son sensibles a mayúsculas y minúsculas</span>
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <Button
-                                btnAttrs={{onClick: this.handleNext, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Continuar</Button>
+                                btnAttrs={{
+                                    onClick: this.handleNext,
+                                    className: "btn btn-info btn-block",
+                                    href: "#",
+                                    disabled: this.props.ajaxInProgress
+                                }}>Continuar</Button>
                         </div>
                     </div>
                 </form>

@@ -25,20 +25,24 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-function generateToken(length = 6) {
+function generateToken(length = 6, uppercase = false) {
     if ((0 >= length) || (40 < length)) {
         throw new Error('La longitud del token debe estar en el rango entre 1 y 40')
     }
 
     let timestamp = Math.floor(Date.now());
-    console.log(typeof  timestamp);
-    console.log(typeof  timestamp.toString());
     let hash = crypto.createHash('sha1').update(timestamp.toString(), 'utf8').digest('hex');
 
     // 40 is a length of sha1
     let startPosition = Math.min(40 - length, mt_rand(0, 33));
 
-    return hash.substr(startPosition, length);
+    let resultado = hash.substr(startPosition, length);
+
+    if (uppercase) {
+        resultado = resultado.toUpperCase();
+    }
+
+    return resultado;
 }
 
 function mt_rand(min, max) {
