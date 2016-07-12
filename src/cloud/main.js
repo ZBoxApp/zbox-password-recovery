@@ -98,6 +98,7 @@ Parse.Cloud.define('startReset', (request, response) => {
     let email = request.params.email || '';
     zimbraApi.getAccount(email, (error, account) => {
         if (error) {
+            console.log('ERROR startReset', error);
             return response.error(RESET_ERROR.NOT_EXIST);
         } else {
             // Se verifica si la cuenta
