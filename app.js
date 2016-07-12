@@ -7,11 +7,30 @@ var favicon = require('serve-favicon');
 var fs = require('fs');
 var logger = require('morgan');
 var parseServer = require('parse-server').ParseServer;
+var parseDashboard = require('parse-dashboard');
 var path = require('path');
 
 var routes = require(path.join(__dirname, "src/routes/index"));
 
 var app = express();
+
+var dashboard = new parseDashboard({
+    "allowInsecureHTTP": true,
+	"apps": [
+		{
+			"serverURL": process.env.PARSE_SERVER_URL,
+			"appId": process.env.PARSE_REST_API_KEY,
+			"masterKey": process.env.PARSE_MASTER_KEY,
+			"appName": 'APPRESET'
+		}
+	],
+	"users": [
+    {
+      "user": process.env.DASHBOARD_USER,
+      "pass": process.env.DASHBOARD_PASS
+    }]
+}, true);
+
 
 app.use(process.env.PARSE_ENDPOINT_API, new parseServer({
     appId: 'APPRESET',
@@ -21,6 +40,8 @@ app.use(process.env.PARSE_ENDPOINT_API, new parseServer({
     restAPIKey: process.env.PARSE_REST_API_KEY,
     serverURL: process.env.PARSE_SERVER_URL
 }));
+
+app.use('/dashboard', dashboard);
 
 // view engine setup
 app.set('views', path.join(__dirname, "src", "views"));
