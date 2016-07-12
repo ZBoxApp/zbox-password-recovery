@@ -5,7 +5,7 @@
 set -e
 
 echo "Aqui recuperamos los Artifacts"
-ls /tmp/
+ls /tmp/src
 if [ "$(ls /tmp/s2i/artifacts/ 2>/dev/null)" ]; then
     mv /tmp/s2i/artifacts/* ./src
 fi
