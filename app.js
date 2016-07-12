@@ -19,9 +19,9 @@ var dashboard = new parseDashboard({
 	"apps": [
 		{
 			"serverURL": process.env.PARSE_SERVER_URL,
-			"appId": process.env.PARSE_REST_API_KEY,
+			"appId": 'APPRESET',
 			"masterKey": process.env.PARSE_MASTER_KEY,
-			"appName": 'APPRESET'
+			"appName": 'ZBox Password Reset'
 		}
 	],
 	"users": [
