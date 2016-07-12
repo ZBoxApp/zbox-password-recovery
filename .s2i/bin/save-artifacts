@@ -1,6 +1,9 @@
 #!/bin/bash
 
+echo "Iniciando Save artifacts"
+echo "Cambio de Directorio"
 pushd /opt/app-root/src
+ls `pwd`
 if [ -d "node_modules" ]; then
   tar cf - node_modules
 fi

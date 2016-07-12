@@ -43,6 +43,12 @@ const RESET_ERROR = {
     PASSWORD_SHORT: {code: 'ZB009', description: 'El password ingresado es demasiado corto'}
 };
 
+function DEBUG(msg, error) {
+  if (process.env.DEBUG) {
+    console.log(msg, error);
+  }
+}
+
 function getRecoveryMethods(account) {
     let methods = {};
 
@@ -98,9 +104,10 @@ Parse.Cloud.define('startReset', (request, response) => {
     let email = request.params.email || '';
     zimbraApi.getAccount(email, (error, account) => {
         if (error) {
-            console.log('ERROR startReset', error);
+            DEBUG('Cuenta No existe', error);
             return response.error(RESET_ERROR.NOT_EXIST);
         } else {
+            DEBUG('Esta es la cuenta', account);
             // Se verifica si la cuenta
             if (securityStatus.indexOf(account.attrs.zimbraAccountStatus) > 0) {
                 return response.error(RESET_ERROR.UNAUTHORIZED);
@@ -161,6 +168,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                                         }
                                     });
                                 } else {
+                                    DEBUG('UNKNOWN ERROR', null);
                                     return response.error(RESET_ERROR.UNKNOWN);
                                 }
                             } else {
@@ -173,11 +181,13 @@ Parse.Cloud.define('startReset', (request, response) => {
                             }
                         },
                         error: (error) => {
+                            DEBUG('UNKNOWN ERROR 2', error);
                             return response.error(RESET_ERROR.UNKNOWN);
                         }
                     })
                 },
                 error: function (error) {
+                    DEBUG('UNKNOWN ERROR 3', error);
                     return response.error(RESET_ERROR.UNKNOWN);
                 }
             });

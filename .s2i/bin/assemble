@@ -4,13 +4,14 @@
 
 set -e
 
-echo "---> Installing application source"
-cp -Rf /tmp/src/. ./
-
-echo "restore build artifacts"
+echo "Aqui recuperamos los Artifacts"
+ls /tmp/
 if [ "$(ls /tmp/s2i/artifacts/ 2>/dev/null)" ]; then
     mv /tmp/s2i/artifacts/* ./src
 fi
+
+echo "---> Installing application source"
+cp -Rf /tmp/src/. ./
 
 echo "---> Building your Node application from source"
 npm install -d
