@@ -11,6 +11,7 @@ if [ "$(ls /tmp/s2i/artifacts/ 2>/dev/null)" ]; then
 fi
 
 echo "---> Installing application source"
+echo `pwd`
 cp -Rf /tmp/src/. ./
 
 echo "---> Building your Node application from source"
