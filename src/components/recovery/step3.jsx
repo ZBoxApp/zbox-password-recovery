@@ -42,13 +42,13 @@ export default class TokenInputForm extends React.Component {
             e.preventDefault();
             return;
         }
-        
+
         this.props.nextStep();
     }
 
     render() {
         return (
-            <Panel hasHeader={true} title={this.props.email}>
+            <Panel hasHeader={true} title={`Hola ${this.props.name} - ${this.props.email}`}>
                 <form method="post" className="form-horizontal" noValidate>
                     <p className="text-center">Ingresa el código que hemos enviado
                         a {this.protectReciever(this.props.reciever)}</p>
@@ -85,4 +85,6 @@ TokenInputForm.propTypes = {
     }
 };
 
-
+TokenInputForm.defaultProps = {
+    name: 'Usuario'
+};

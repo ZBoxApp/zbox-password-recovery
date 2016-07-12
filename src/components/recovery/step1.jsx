@@ -42,11 +42,9 @@ export default class RequestForm extends React.Component {
         let title = this.props.wait > 0 ? `Debe esperar ${this.props.wait} segundos` : 'Continuar';
 
         return (
-            <Panel hasHeader={true} title={'¿No recuerdas tu contraseña?'}>
+            <Panel hasHeader={true} title={'¿No puedes iniciar sesión?'}>
                 <form method="post" className="form-horizontal" noValidate>
-                    <p className="text-center">Ingresa tu email para comenzar</p>
-                    <p className="text-center">Este es el lugar indicado para restablecer una contraseña olvidada, o
-                        desbloquear tu cuenta</p>
+                    <p>Para recuperar tu contraseña, o desbloquear tu cuenta introduce tu dirección de correo electrónico.</p>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <input type="email" required className="form-control" value={this.state.value}

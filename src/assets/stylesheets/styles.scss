@@ -13,7 +13,7 @@
 @import 'components/module';
 
 body {
-  margin-top: 50px;
+  padding-top: 50px;
 }
 
 .token-digit {
@@ -35,4 +35,15 @@ meter {
   label {
     font-weight: normal !important;
   }
+}
+
+.app-logo {
+  max-width: 180px;
+  padding-bottom: 60px;
+}
+
+.zbox-footer {
+  padding-top: 20px;
+  text-align: center;
+  font-size: 90%;
 }

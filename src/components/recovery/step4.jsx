@@ -27,7 +27,7 @@ export default class PasswordChangeForm extends React.Component {
             this.handleNext();
         }
     }
-    
+
     handleNext(e) {
         if (this.props.ajaxInProgress) {
             e.preventDefault();
@@ -45,7 +45,7 @@ export default class PasswordChangeForm extends React.Component {
 
     render() {
         return (
-            <Panel hasHeader={true} title={this.props.email}>
+            <Panel hasHeader={true} title={`Hola ${this.props.name} - ${this.props.email}`}>
                 <form method="post" className="form-horizontal" id="password-form">
                     <p className="text-center">Ingresa tu nueva contraseña</p>
                     <div className="form-group">

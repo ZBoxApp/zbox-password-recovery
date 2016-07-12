@@ -11,13 +11,15 @@ import sourcemaps from 'gulp-sourcemaps';
 
 let paths= {
     src: {
-        js: path.join(__dirname, "src", "assets", "javascripts"),
-        styles: path.join(__dirname, "src", "assets", "stylesheets")
+        js: path.join(__dirname, "src/assets/javascripts"),
+        styles: path.join(__dirname, "src/assets/stylesheets"),
+        images: path.join(__dirname, "src/assets/images/*"),
     },
     dist: {
         js: path.join(__dirname, "dist", "assets", "javascripts"),
         styles: path.join(__dirname, "dist", "assets", "stylesheets"),
-        fonts: path.join(__dirname, "dist", "assets", "fonts")
+        fonts: path.join(__dirname, "dist", "assets", "fonts"),
+        images: path.join(__dirname, "dist", "assets", "images")
     }
 };
 
@@ -51,6 +53,11 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest(paths.dist.fonts));
 });
 
+gulp.task('images', function() {
+    return gulp.src(paths.src.images)
+        .pipe(gulp.dest(paths.dist.images));
+});
+
 gulp.task('styles', ['fonts'], function () {
     return gulp.src(path.join(paths.src.styles, "*.s+(a|c)ss"))
         .pipe(sourcemaps.init())
@@ -61,5 +68,5 @@ gulp.task('styles', ['fonts'], function () {
         .pipe(gulp.dest(path.join(paths.dist.styles)));
 });
 
-gulp.task('default', ['lint', 'styles']);
+gulp.task('default', ['lint', 'styles', 'images']);
 gulp.task('lint', ['sass-lint', 'js-lint']);

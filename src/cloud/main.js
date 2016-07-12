@@ -44,9 +44,9 @@ const RESET_ERROR = {
 };
 
 function DEBUG(msg, error) {
-  if (process.env.DEBUG) {
-    console.log(msg, error);
-  }
+    if (process.env.DEBUG) {
+        console.log(msg, error);
+    }
 }
 
 function getRecoveryMethods(account) {
@@ -73,16 +73,30 @@ function getRecoveryMethods(account) {
     return methods;
 }
 
-function sendEmail(to, tokenRequest, callback) {
+function sendEmail(to, name, tokenRequest, callback) {
     let transporter = nodemailer.createTransport(mailerConfig);
     let token = tokenRequest.toJSON().objectId;
-    let url = `http://${process.env.HOSTNAME}${process.env.HOST != 80 ? (':' + process.env.PORT) : ''}?e=${tokenRequest.get('account')}&t=${token}`;
+    let url = `https://${process.env.HOSTNAME}?e=${tokenRequest.get('account')}&t=${token}`;
+    let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT/60 : process.env.SECURITY_TOKEN_TIMEOUT
+    let units = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? 'horas' : 'minutos';
+
+    let html = `
+        <p>Hola ${name},<br/>
+           El siguiente mensaje contiene el código para que puedas cambiar tu contraseña de correo electrónico.
+        </p>
+        <p><strong>Código:</strong> ${token}</p>
+        <p>Si lo prefieres, también puedes cambiar tu contraseña haciendo click en el siguiente enlace o copiar y pegarlo en tu navegador.</p>
+        <p>${url}</p>
+        <p>Este token tiene una duración de solo ${duracion} ${units}.</p>
+        <p>Si tu no solicitaste el cambio de contraseña puedes descartar este correo.</p>
+        <hr/>
+        <p><img style="max-width:120px" src="https://${process.env.HOSTNAME}/images/zbox-logo.png"></p>`;
 
     transporter.sendMail({
         from: process.env.MAILER_USERNAME,
         to: to,
-        subject: 'zBox Recovery',
-        text: `Ingrese el token de confirmación ${token} en el formulario o haga clic en la siguiente url ${url}`
+        subject: 'Recuperación de contraseña ZBox',
+        html: html,
     }, (error, data) => {
         callback(error, data)
     });
@@ -94,10 +108,26 @@ function sendSMS(to, tokenRequest, callback) {
     twilio.sendMessage({
         to: to, // Any number Twilio can deliver to
         from: process.env.TWILIO_PHONE, // A number you bought from Twilio and can use for outbound communication
-        body: `Ingrese el token de confirmación ${token} en el formulario`
+        body: `Mensaje de ZBox: Tú Código de recuperación de contraseña es: ${token}.`
     }, function (err, responseData) { //this function is executed when a response is received from Twilio
         callback(err, responseData);
     });
+}
+
+function getAccountName(account) {
+    if (account.attrs.hasOwnProperty('displayName')) {
+        return account.attrs.displayName;
+    }
+
+    if (account.attrs.hasOwnProperty('cn')) {
+        return `${account.attrs.cn} ${account.attrs.sn}`;
+    }
+
+    if (account.attrs.hasOwnProperty('givenName')) {
+        return `${account.attrs.givenName} ${account.attrs.sn}`;
+    }
+
+    return '';
 }
 
 Parse.Cloud.define('startReset', (request, response) => {
@@ -116,11 +146,13 @@ Parse.Cloud.define('startReset', (request, response) => {
             let query = new Parse.Query(TokenRequest);
             query.equalTo("account", email);
 
+            let _accountName= getAccountName(account);
+
             query.find({
                 success: (results) => {
                     // Hay un token de recuperación para esa cuenta
                     if (results.length !== 0) {
-                        let isExpired = moment().isAfter(results[0].get('expireAt'));
+                        let isExpired = moment().isAfter(results[0].get('expireAt')) || process.env.APP_DEV;
 
                         if (isExpired) {
                             results[0].destroy();
@@ -144,11 +176,12 @@ Parse.Cloud.define('startReset', (request, response) => {
                         success: (tokenRequest) => {
                             if (Object.keys(recoveryMethods).length === 1) {
                                 if (recoveryMethods.hasOwnProperty('email')) {
-                                    sendEmail(recoveryMethods.email, tokenRequest, (error, data) => {
+                                    sendEmail(recoveryMethods.email, _accountName, tokenRequest, (error, data) => {
                                         if (error) {
                                             return response.error(RESET_ERROR.SMTP);
                                         } else {
                                             return response.success({
+                                                name: _accountName,
                                                 send: true,
                                                 email: email,
                                                 secondaryEmail: Utils.protectEmail(recoveryMethods.email)
@@ -161,6 +194,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                                             return response.error(RESET_ERROR.SMS);
                                         } else {
                                             return response.success({
+                                                name: _accountName,
                                                 send: true,
                                                 email: email,
                                                 phone: Utils.protectPhone(recoveryMethods.phone)
@@ -173,6 +207,7 @@ Parse.Cloud.define('startReset', (request, response) => {
                                 }
                             } else {
                                 return response.success({
+                                    name: _accountName,
                                     email: email,
                                     send: false,
                                     secondaryEmail: Utils.protectEmail(recoveryMethods.email),
@@ -211,6 +246,8 @@ Parse.Cloud.define('sendToken', (request, response) => {
             let query = new Parse.Query(TokenRequest);
             query.equalTo("account", email);
 
+            let _accountName= getAccountName(account);
+
             query.find({
                 success: (results) => {
                     // Hay un token de recuperación para esa cuenta
@@ -226,12 +263,13 @@ Parse.Cloud.define('sendToken', (request, response) => {
                             let recoveryMethods = getRecoveryMethods(account);
                             switch (type) {
                                 case 'email':
-                                    sendEmail(recoveryMethods.email, tokenRequest, (error, data) => {
+                                    sendEmail(recoveryMethods.email, _accountName, tokenRequest, (error, data) => {
                                         if (error) {
                                             return response.error(RESET_ERROR.SMTP);
                                         } else {
                                             return response.success({
                                                 send: true,
+                                                name: _accountName,
                                                 email: email,
                                                 secondaryEmail: Utils.protectEmail(recoveryMethods.email)
                                             });
@@ -245,6 +283,7 @@ Parse.Cloud.define('sendToken', (request, response) => {
                                         } else {
                                             return response.success({
                                                 send: true,
+                                                name: _accountName,
                                                 email: email,
                                                 phone: Utils.protectPhone(recoveryMethods.phone)
                                             });
@@ -252,14 +291,17 @@ Parse.Cloud.define('sendToken', (request, response) => {
                                     });
                                     break;
                                 default:
+                                    DEBUG('UNKNOWN ERROR (SendToken 1)');
                                     return response.error(RESET_ERROR.UNKNOWN);
                             }
                         }
                     } else {
+                        DEBUG('UNKNOWN ERROR (SendToken 2)');
                         return response.error(RESET_ERROR.UNKNOWN);
                     }
                 },
                 error: (error) => {
+                    DEBUG('UNKNOWN ERROR (SendToken 3)', error);
                     return response.error(RESET_ERROR.UNKNOWN);
                 }
             });

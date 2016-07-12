@@ -98,6 +98,7 @@ export default class Root extends React.Component {
                 let state = {
                     step: data.send ? 3 : 2,
                     email: data.email,
+                    name: data.name,
                     secondaryEmail: data.hasOwnProperty('secondaryEmail') ? data.secondaryEmail : null,
                     phone: data.hasOwnProperty('phone') ? data.phone : null
                 };
@@ -216,13 +217,13 @@ export default class Root extends React.Component {
                 break;
             case 2:
                 return (
-                    <Step2 email={this.state.email} secondaryEmail={this.state.secondaryEmail}
+                    <Step2 email={this.state.email} secondaryEmail={this.state.secondaryEmail} name={this.state.name}
                            phone={this.state.phone} nextStep={this.toStep3} ajaxInProgress={this.state.ajaxInProgress}/>
                 );
                 break;
             case 3:
                 return (
-                    <Step3 email={this.state.email}
+                    <Step3 email={this.state.email} name={this.state.name}
                            reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}
                            onChange={this.updateFromInput} ajaxInProgress={this.state.ajaxInProgress}
                            nextStep={this.toStep4}/>
@@ -231,7 +232,7 @@ export default class Root extends React.Component {
             case 4:
                 return (
                     <Step4 email={this.state.email} nextStep={this.finish} onChange={this.updateFromInput}
-                           ajaxInProgress={this.state.ajaxInProgress}/>
+                           ajaxInProgress={this.state.ajaxInProgress} name={this.state.name}/>
                 );
                 break;
         }

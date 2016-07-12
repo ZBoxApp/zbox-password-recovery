@@ -33,7 +33,7 @@ export default class SendTokenForm extends React.Component {
 
     render() {
         return (
-            <Panel hasHeader={true} title={this.props.email}>
+            <Panel hasHeader={true} title={`Hola ${this.props.name} - ${this.props.email}`}>
                 <form method="post" className="form-horizontal">
                     <p className="text-center">Selecciona un método para recibir un código de verificación y poder
                         cambiar tu contraseña</p>
@@ -74,3 +74,6 @@ SendTokenForm.propTypes = {
     }
 };
 
+SendTokenForm.defaultProps = {
+    name: 'Usuario'
+};
