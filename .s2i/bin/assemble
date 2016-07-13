@@ -21,16 +21,14 @@ cp -Rf /tmp/src/. ./
 echo "---> Building your Node application from source"
 npm install -d
 
-echo "---> Path Actual"
-echo `pwd`
-echo "---> Revisando si existe los modulos"
-ls `pwd`/node_modules
-
 echo "---> El Path de comandos es:"
 echo $PATH
 
-NODE_ENV=production npm run webpack
-NODE_ENV=production npm run gulp assets
+echo "---> Los ejecutables de node en /opt/app-root/src/node_modules/.bin/ son:"
+ls -l /opt/app-root/src/node_modules/.bin/
+
+NODE_ENV=production npm run build-webpack
+NODE_ENV=production npm run build-assets
 
 # Fix source directory permissions
 fix-permissions ./
