@@ -112,7 +112,7 @@ function sendSMS(to, tokenRequest, callback) {
     twilio.sendMessage({
         to: to, // Any number Twilio can deliver to
         from: process.env.TWILIO_PHONE, // A number you bought from Twilio and can use for outbound communication
-        body: `Mensaje de ZBox: Tú Código de recuperación de contraseña es: ${token}.`
+        body: `ZBox Mail: Tu Código de recuperación de contraseña es: ${token}`
     }, function (err, responseData) { //this function is executed when a response is received from Twilio
         callback(err, responseData);
     });
