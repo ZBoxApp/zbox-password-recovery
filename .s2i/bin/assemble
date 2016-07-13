@@ -21,7 +21,16 @@ cp -Rf /tmp/src/. ./
 echo "---> Building your Node application from source"
 npm install -d
 
-npm run build
+echo "---> Path Actual"
+echo `pwd`
+echo "---> Revisando si existe los modulos"
+ls `pwd`/node_modules
+
+npm i webpack --save
+npm i gulp --save
+
+npm run build-webpack
+npm run build-assets
 
 # Fix source directory permissions
 fix-permissions ./
