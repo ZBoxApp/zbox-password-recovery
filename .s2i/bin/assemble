@@ -26,11 +26,11 @@ echo `pwd`
 echo "---> Revisando si existe los modulos"
 ls `pwd`/node_modules
 
-npm i webpack --save
-npm i gulp --save
+echo "---> El Path de comandos es:"
+echo $PATH
 
-npm run build-webpack
-npm run build-assets
+NODE_ENV=production npm run webpack
+NODE_ENV=production npm run gulp assets
 
 # Fix source directory permissions
 fix-permissions ./
