@@ -1,5 +1,4 @@
 #!/bin/bash
+set -e
 
-echo "Iniciando Save artifacts"
-echo "Cambio de Directorio"
 tar -C /opt/app-root/src -cf - node_modules

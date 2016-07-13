@@ -7,7 +7,7 @@ set -e
 echo "Aqui recuperamos los Artifacts"
 ls /tmp/src
 if [ "$(ls /tmp/s2i/artifacts/ 2>/dev/null)" ]; then
-    mv /tmp/s2i/artifacts/node_modules ./src
+    mv /tmp/s2i/artifacts/* ./src
 fi
 
 echo "---> Installing application source"
