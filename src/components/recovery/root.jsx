@@ -139,7 +139,7 @@ export default class Root extends React.Component {
 
         this.ajaxCall(this, '/parse/functions/sendToken', params, (component, data)=> {
             swal({
-                title: "Token envíado",
+                title: "Código envíado",
                 text: "Se ha enviado la información a su " + (email ? 'email' : 'teléfono'),
                 type: "success",
                 showCancelButton: false,
