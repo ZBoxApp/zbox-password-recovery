@@ -35,3 +35,9 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+.idea/
+dist/
+src/config/config.yml
+src/config/parse.yml
+.env

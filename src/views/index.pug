@@ -1,0 +1,17 @@
+extends layout
+
+block stylesheet
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+  #container(class='container')
+    div(class='row col-md-offset-1 col-md-10')
+      img(src='/images/zbox-logo.png' class='app-logo')
+    div(class='row')
+      #app
+    div(class="row zbox-footer")
+      p(class='text-muted') ZBox Mail : Correo en la nube, seguro y facil de usar
+      p(class='text-muted') Copyright © 2014-2016 ZBox Spa. Todos los derechos reservados
+
+block javascripts
+    script(type='text/javascript', src='/javascripts/bundle.min.js')

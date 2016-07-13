@@ -1,0 +1,61 @@
+$list-item-date-color: #aaa;
+
+// Lists
+.list {
+  .list-item-container {
+    float: left;
+
+    div:first-child {
+      border-top: 0;
+    }
+  }
+
+  .list-item-container-small {
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .list-item {
+    border-top: 1px solid $border-color;
+    float: left;
+    margin-top: 10px;
+    overflow-x: hidden;
+    padding-top: 10px;
+    position: relative;
+    width: 100%;
+
+    .list-item-content {
+      p {
+        margin-bottom: 3px;
+        margin-top: 0;
+      }
+
+      .list-item-right {
+        height: 100%;
+        padding: 0 10px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .list-item-title {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 20px;
+        margin: 0;
+      }
+    }
+  }
+
+  .list-item-date {
+    color: $list-item-date-color;
+    font-size: 10px;
+    text-align: center;
+  }
+}

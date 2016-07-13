@@ -1,0 +1,188 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends: 'eslint:recommended'
+installedESLint: true
+parser: 'babel-eslint'
+parserOptions:
+  ecmaVersion: 6
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+plugins:
+  - react
+rules:
+  # Possible Errors
+
+  # Best Practices
+  array-callback-return: error
+  block-scoped-var: error
+  complexity: [error, 3]
+  consistent-return: error
+  curly: [error, "all"]
+  dot-location: [error, "object"]
+  dot-notation: error
+  eqeqeq: [error, "smart"]
+  guard-for-in: error
+  no-alert: error
+  no-caller: error
+  no-div-regex: error
+  no-else-return: error
+  no-empty-function: error
+  no-eval: error
+  no-extend-native: error
+  no-extra-bind: error
+  no-extra-label: error
+  no-floating-decimal: error
+  no-implicit-globals: off
+  no-implied-eval: error
+  no-iterator: error
+  no-labels: error
+  no-lone-blocks: error
+  no-loop-func: error
+  no-magic-numbers: [error, { ignore: [-1, 0, 1, 2], enforceConst: true, detectObjects: true } ]
+  no-multi-spaces: [error, { exceptions: { Property: false } }]
+  no-multi-str: error #0
+  no-native-reassign: error
+  no-new: error
+  no-new-func: error
+  no-new-wrappers: error
+  no-octal-escape: error
+  no-param-reassign: error
+  no-proto: error
+  no-redeclare: error
+  no-return-assign: [error, "always"]
+  no-script-url: error
+  no-self-compare: error
+  no-sequences: error
+  no-throw-literal: error
+  no-unmodified-loop-condition: error
+  no-unused-expressions: error
+  no-useless-concat: error
+  no-void: error
+  no-warning-comments: error
+  no-with: error
+  radix: error
+  vars-on-top: error
+  wrap-iife: [error, "outside"]
+  yoda: [error, "never", {exceptRange: false, onlyEquality: false}]
+
+  # Variables
+  no-undef-init: error
+  no-undefined: error
+  no-unused-vars: [error, {vars: "all", args: "after-used"}]
+  no-use-before-define: [error, "nofunc"]
+  no-shadow: [error, {hoist: "functions"}]
+  no-shadow-restricted-names: error
+
+  # Node.js and CommonJS
+  global-require: error
+  no-process-env: error
+  no-process-exit: error
+
+  # Stylistic Issues
+  array-bracket-spacing: [error, "never"]
+  brace-style: [error, "1tbs", { allowSingleLine: false }]
+  camelcase: [error, {properties: "never"}]
+  comma-spacing: [error, {before: false, after: true}]
+  comma-style: [error, "last"]
+  computed-property-spacing: [error, "never"]
+  consistent-this: [error, "self"]
+  func-names: error
+  func-style: [error, "declaration"]
+  # id-blacklist: 0
+  indent: [error, 4, {SwitchCase: 0}]
+  jsx-quotes: [error, "prefer-single"]
+  key-spacing: [error, {beforeColon: false, afterColon: true}]
+  keyword-spacing: [error, {before: true, after: true, overrides: {}}]
+  linebreak-style: error
+  lines-around-comment: [error]
+  newline-per-chained-call: error
+  new-cap: error
+  new-parens: error
+  no-array-constructor: error
+  no-lonely-if: error
+  no-mixed-spaces-and-tabs: error
+  no-multiple-empty-lines: [error, {max: 1}]
+  no-negated-condition: error
+  no-nested-ternary: error
+  no-spaced-func: error
+  no-ternary: off
+  no-trailing-spaces: [error, { skipBlankLines: false }]
+  #no-underscore-dangle: error
+  no-unneeded-ternary: [error, {defaultAssignment: false}]
+  no-new-object: error
+  object-curly-spacing: [error, "never"]
+  one-var: [error, "never"]
+  one-var-declaration-per-line: error
+  operator-linebreak: [error, "after"]
+  padded-blocks: [error, "never"]
+  quote-props: [error, "as-needed"]
+  quotes: [error, "single", "avoid-escape"]
+  semi: [error, "always"]
+  semi-spacing: [error, {before: false, after: true}]
+  space-before-blocks: [error, "always"]
+  space-before-function-paren: [error, "never"]
+  space-in-parens: [error, "never"]
+  space-infix-ops: error
+  space-unary-ops: [error, { words: true, nonwords: false }]
+  wrap-regex: error
+
+  # ECMAScript6
+  arrow-body-style: off
+  arrow-parens: [error, "always"]
+  arrow-spacing: [error, { before: true, after: true }]
+  constructor-super: error
+  generator-star-spacing: [error, {before: false, after: true}]
+  no-class-assign: error
+  no-confusing-arrow: error
+  no-const-assign: error
+  no-dupe-class-members: error
+  no-this-before-super: error
+  no-useless-constructor: error
+  no-var: off
+  object-shorthand: [error, "always"] # [1, "always"]
+  prefer-arrow-callback: warn
+  prefer-const: warn
+  prefer-reflect: warn
+  prefer-rest-params: error
+  prefer-spread: error
+  prefer-template: off
+  require-yield: error
+  sort-imports: off
+  template-curly-spacing: [error, "never"]
+
+  # ReactJS
+  react/display-name  : [2, { ignoreTranspilerName: false }]
+  react/no-deprecated: error
+  react/no-is-mounted: error
+  react/no-string-refs: off
+  react/jsx-pascal-case: error
+  react/jsx-equals-spacing: [error, "never"]
+  react/jsx-handler-names: off
+  react/jsx-boolean-value: [error, "always"]
+  react/jsx-closing-bracket-location: [error, { location: "tag-aligned" }]
+  react/jsx-curly-spacing: [error, "never"]
+  react/jsx-key: error
+  react/jsx-max-props-per-line: [error, { maximum: 1 }]
+  react/jsx-no-bind: 1
+  react/jsx-space-before-closing: [error, "never"]
+  react/jsx-no-duplicate-props: [error, { ignoreCase: false }]
+  react/jsx-no-literals: 1
+  react/jsx-no-undef: error
+  react/jsx-uses-react: error
+  react/jsx-uses-vars: error
+  react/no-danger: off
+  react/no-did-mount-set-state: error
+  react/no-did-update-set-state: error
+  react/no-direct-mutation-state: error
+  react/no-multi-comp: [error, { ignoreStateless: true }]
+  react/no-set-state: off
+  react/no-unknown-property: error
+  react/prefer-es6-class: error
+  react/prop-types: error
+  react/self-closing-comp: error
+  react/sort-comp: off
+  react/wrap-multilines: error
