@@ -27,8 +27,14 @@ echo $PATH
 echo "---> Los ejecutables de node en /opt/app-root/src/node_modules/.bin/ son:"
 ls -l /opt/app-root/src/node_modules/.bin/
 
-NODE_ENV=production npm run build-webpack
-NODE_ENV=production npm run build-assets
+ln -s /opt/app-root/src/node_modules/webpack/bin/webpack.js /opt/app-root/src/node_modules/.bin/
+ln -s /opt/app-root/src/node_modules/gulp/bin/gulp.js /opt/app-root/src/node_modules/.bin/
+
+echo "---> Enlaces:"
+ls -l /opt/app-root/src/node_modules/.bin/
+
+npm run build-webpack
+npm run build-assets
 
 # Fix source directory permissions
 fix-permissions ./
