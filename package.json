@@ -1,11 +1,11 @@
 {
   "name": "zbox-password-recovery",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "lint": "./node_modules/.bin/gulp lint",
     "start": "node ./bin/www",
-    "build": "NODE_ENV=production ./node_modules/.bin/webpack && ./node_modules/.bin/gulp assets"
+    "build": "NODE_ENV=production /opt/app-root/src/node_modules/.bin/webpack && /opt/app-root/src/node_modules/.bin/gulp assets"
   },
   "repository": {
     "type": "git",
