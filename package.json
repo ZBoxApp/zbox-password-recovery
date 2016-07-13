@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/gulp lint",
     "start": "node ./bin/www",
-    "build-webpack": "NODE_ENV=production webpack"
+    "build-webpack": "NODE_ENV=production webpack",
     "build-assets": "NODE_ENV=production gulp assets"
   },
   "repository": {
