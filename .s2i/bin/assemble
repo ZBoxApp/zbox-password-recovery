@@ -8,7 +8,11 @@ echo "Aqui recuperamos los Artifacts"
 echo "ls /tmp"
 ls /tmp/
 if [ "$(ls /tmp/artifacts 2>/dev/null)" ]; then
-    mv /tmp/artifacts/node_modules ./src
+    echo "Copiando node modules"
+    mkdir -p ./node_modules
+    mv /tmp/artifacts/node_modules/* ./node_modules/
+    echo "Listando archivos copiados"
+    ls ./
 fi
 
 echo "---> Installing application source"
