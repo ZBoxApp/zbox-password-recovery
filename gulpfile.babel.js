@@ -1,3 +1,5 @@
+"use strict";
+
 import autoprefixer from 'gulp-autoprefixer';
 import concat from 'gulp-concat';
 import eslint from 'gulp-eslint';
@@ -9,12 +11,15 @@ import sourcemaps from 'gulp-sourcemaps';
 
 let paths= {
     src: {
-        js: path.join(__dirname, "src", "assets", "javascripts"),
-        styles: path.join(__dirname, "src", "assets", "stylesheets")
+        js: path.join(__dirname, "src/assets/javascripts"),
+        styles: path.join(__dirname, "src/assets/stylesheets"),
+        images: path.join(__dirname, "src/assets/images/*"),
     },
     dist: {
         js: path.join(__dirname, "dist", "assets", "javascripts"),
-        styles: path.join(__dirname, "dist", "assets", "stylesheets")
+        styles: path.join(__dirname, "dist", "assets", "stylesheets"),
+        fonts: path.join(__dirname, "dist", "assets", "fonts"),
+        images: path.join(__dirname, "dist", "assets", "images")
     }
 };
 
@@ -43,6 +48,16 @@ gulp.task('js-lint', () => {
         .pipe(eslint.failOnError());
 });
 
+gulp.task('fonts', function() {
+    return gulp.src(['./node_modules/font-awesome/fonts/*'])
+        .pipe(gulp.dest(paths.dist.fonts));
+});
+
+gulp.task('images', function() {
+    return gulp.src(paths.src.images)
+        .pipe(gulp.dest(paths.dist.images));
+});
+
 gulp.task('styles', function () {
     return gulp.src(path.join(paths.src.styles, "*.s+(a|c)ss"))
         .pipe(sourcemaps.init())
@@ -53,5 +68,6 @@ gulp.task('styles', function () {
         .pipe(gulp.dest(path.join(paths.dist.styles)));
 });
 
-gulp.task('default', ['lint', 'styles']);
+gulp.task('default', ['lint', 'assets']);
+gulp.task('assets', ['styles', 'images', 'fonts']);
 gulp.task('lint', ['sass-lint', 'js-lint']);

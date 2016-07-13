@@ -1,0 +1,92 @@
+.sweet-alert {
+  box-shadow: 0 0 1px $black-opacity-p1, 0 2px 4px $black-opacity-p2;
+  padding: 25px;
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  button {
+    background-color: $sweet-alert-btn-color;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: none;
+    color: $white;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    margin: 26px 5px 0;
+    padding: 10px 32px;
+
+    &:focus {
+      box-shadow: 0 0 2px $sweet-alert-btn-rgba-focus-p1, inset 0 0 0 1px $sweet-alert-btn-rgba-focus-p2;
+      outline: none;
+    }
+
+    &:hover {
+      background-color: $sweet-alert-btn-color-hover;
+    }
+
+    &:active {
+      background-color: $sweet-alert-btn-color-active;
+    }
+
+    &.cancel {
+      background-color: $sweet-alert-btn-cancel;
+    }
+
+    &.cancel:hover {
+      background-color: $sweet-alert-btn-cancel-hover;
+    }
+
+    &.cancel:active {
+      background-color: $sweet-alert-btn-cancel-active;
+    }
+  }
+}
+
+.table {
+  thead {
+    border-bottom: 1px solid $table-children-border-bottom-color;
+  }
+
+  tr {
+    border-bottom: 1px solid $table-children-border-bottom-color;
+  }
+
+  th {
+    border-bottom: 1px solid $table-children-border-bottom-color;
+  }
+}
+
+.cg-notify-message {
+  &.homer-notify {
+    background: $white;
+    border: 0;
+    box-shadow: 0 0 1px $black-opacity-p1, 0 2px 4px $black-opacity-p2;
+    color: inherit;
+    margin-top: 30px;
+    padding: 0;
+
+    &.alert-warning {
+      border-left: 6px solid $color-yellow;
+    }
+
+    &.alert-success {
+      border-left: 6px solid $color-green;
+    }
+
+    &.alert-danger {
+      border-left: 6px solid $color-red-deep;
+    }
+
+    &.alert-info {
+      border-left: 6px solid $color-blue;
+    }
+  }
+}

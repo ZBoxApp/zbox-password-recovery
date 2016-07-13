@@ -1,0 +1,44 @@
+.new-fields {
+  border-top: 1px solid $color-new-fields;
+  margin-top: 30px;
+
+  h5 {
+    margin: 5px 0;
+  }
+
+  .new-fields-list {
+    .listed-field {
+      margin: 8px 0 0 10px;
+
+      input {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+.actions-buttons {
+  margin-top: 20px;
+
+  a {
+    margin-left: 5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.as-table {
+  display: table;
+
+  .as-cell {
+    display: table-cell;
+    padding-right: 10px;
+    vertical-align: middle;
+  }
+}
+
+.margin-left {
+  margin-left: 5px;
+}

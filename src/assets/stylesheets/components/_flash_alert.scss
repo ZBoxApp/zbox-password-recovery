@@ -1,0 +1,32 @@
+.flash {
+  .flash-error {
+    background: $bg-error-color;
+    color: $flash-error-color;
+  }
+
+  .flash-success {
+    background: $bg-success-color;
+    color: $white;
+  }
+
+  .flash-info {
+    background: $color-blue;
+    color: $white;
+  }
+
+  .flash-warning {
+    background: $bg-warning-color;
+    color: $white;
+  }
+
+  .flash-locked {
+    background: $color-violet;
+    color: $white;
+  }
+
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+
+}

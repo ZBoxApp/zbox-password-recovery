@@ -1,0 +1,41 @@
+.ng-header-cell {
+  border-bottom: 1px solid $border-color;
+  border-right: 0;
+}
+
+.ng-cell {
+  background-color: transparent;
+  border-right: 0;
+}
+
+.ng-top-panel {
+  background: $white;
+}
+
+.ng-row {
+  border-bottom: 1px solid $border-color;
+
+  &.even {
+    background: $bg-event-row-color;
+  }
+
+  &.selected {
+    background: darken($color-background, 4%);
+  }
+}
+
+.grid-style {
+  border: 1px solid $border-color;
+  height: 400px;
+}
+
+.show-grid {
+  margin: 15px 0;
+
+  [class^="col-"] {
+    background-color: $color-background;
+    border: 1px solid $table-children-border-bottom-color;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+}

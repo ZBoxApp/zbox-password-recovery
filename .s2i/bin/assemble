@@ -1,0 +1,24 @@
+#!/bin/bash
+
+[ -d "/usr/src/app" ] && exit 0
+
+set -e
+
+echo "Comenzando Build Incremental"
+if [ "$(ls /tmp/artifacts 2>/dev/null)" ]; then
+    echo "Copiando node modules"
+    mv /tmp/artifacts/* ./
+fi
+
+
+echo "---> Installing application source"
+cp -Rf /tmp/src/. ./
+
+echo "---> Building your Node application from source"
+npm install -d
+
+npm run build-webpack
+npm run build-assets
+
+# Fix source directory permissions
+fix-permissions ./

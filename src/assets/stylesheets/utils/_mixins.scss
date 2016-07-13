@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+// Mixin
+@mixin bg-transparent($color, $alpha: 1) {
+  background: rgba(red($color), green($color), blue($color), $alpha);
+}
+
+@mixin color-transparent($color, $alpha: 1) {
+  color: rgba(red($color), green($color), blue($color), $alpha);
+}

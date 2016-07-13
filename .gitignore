@@ -40,3 +40,4 @@ jspm_packages
 dist/
 src/config/config.yml
 src/config/parse.yml
+.env

@@ -1,0 +1,259 @@
+// Estas variables deben ir en el archivo de variables
+$white: $white;
+$box-wrapper-color-55p: rgba(0, 0, 0, .55);
+
+// Layout
+html {
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+body {
+  background-color: $white;
+  color: $color-text;
+  font-family: 'Open Sans", "Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  &::after {
+    background: $bg-beta;
+    color: $white;
+    content: 'Beta';
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    height: 25px;
+    left: -20px;
+    line-height: 27px;
+    position: fixed;
+    text-align: center;
+    text-shadow: 0 3px 1px $black;
+    text-transform: uppercase;
+    top: 7px;
+    transform: rotate(-45deg);
+    width: 80px;
+  }
+}
+
+#header {
+  background-color: $white;
+  border-bottom: 1px solid $border-color;
+  display: block;
+  height: 62px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+#menu {
+  bottom: 0;
+  float: left;
+  left: 0;
+  position: absolute;
+  top: 62px;
+  transition: all .4s ease 0s;
+  width: $menu-width;
+}
+
+#root {
+  height: inherit;
+
+  > div {
+    height: inherit;
+  }
+
+  .login-container {
+    height: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #wrapper {
+    background: $color-background;
+    border-left: 1px solid $border-color;
+    height: auto;
+    margin: 0 0 0 $menu-width;
+    min-height: 100%;
+    padding: 0;
+    position: relative;
+    transition: all .4s ease 0s;
+  }
+}
+
+.content {
+  min-width: 320px;
+  padding: 25px 40px 40px;
+}
+
+.footer {
+  background: $white;
+  border-top: 1px solid $border-color;
+  bottom: 0;
+  left: 0;
+  padding: 10px 18px;
+  position: absolute;
+  right: 0;
+  transition: all .4s ease 0s;
+}
+
+// Esto deberia ir en tablet
+@media(max-width: 768px) {
+  .content {
+    min-width: 320px;
+    padding: 15px;
+  }
+}
+
+.content-boxed {
+  margin: auto;
+  max-width: 1100px;
+  padding-top: 60px;
+}
+
+#page-header {
+  padding: 20px 40px;
+}
+
+.color-line {
+  background: linear-gradient(to right, $color-navy-blue, $color-navy-blue 25%, $color-violet 25%, $color-violet 35%, $color-blue 35%, $color-blue 45%, $color-green 45%, $color-green 55%, $color-yellow 55%, $color-yellow 65%, $color-orange 65%, $color-orange 75%, $color-red 85%, $color-red 85%, $color-red-deep 85%, $color-red-deep 100%) no-repeat 50% 100%;
+  background-size: 100% 6px;
+  height: 6px;
+}
+
+.fixed-navbar {
+  #header {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  #wrapper {
+    top: 62px;
+  }
+}
+
+.fixed-sidebar {
+  #menu {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 17px;
+    position: fixed;
+    width: 197px;
+  }
+
+  &.show-sidebar {
+    #menu {
+      width: 180px;
+    }
+  }
+}
+
+.fixed-footer {
+  .footer {
+    bottom: 0;
+    left: 181px;
+    position: fixed;
+    right: 0;
+    z-index: 1001;
+  }
+
+  &.hide-sidebar {
+    .footer {
+      left: 0;
+    }
+  }
+}
+
+// Esto deberia ir en tablet
+@media(max-width: 768px) {
+
+  .fixed-footer {
+    .footer {
+      left: 0;
+    }
+
+    &.show-sidebar {
+      .footer {
+        left: 181px;
+      }
+    }
+  }
+
+}
+
+#right-sidebar {
+  background-color: $white;
+  border-left: 1px solid $border-color;
+  bottom: 0;
+  display: none;
+  overflow: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 260px;
+  z-index: 1009;
+
+  &.sidebar-open {
+    display: block;
+  }
+}
+
+.fixed-small-header {
+  .small-header {
+    left: 0;
+    margin-left: 181px;
+    position: fixed;
+    right: 0;
+    top: 62px;
+    z-index: 100;
+  }
+
+  .content {
+    padding-top: 80px;
+  }
+
+  &.hide-sidebar {
+    .small-header {
+      margin-left: 0;
+    }
+  }
+
+  &.page-small {
+    .small-header {
+      margin-left: 0;
+    }
+
+    .content {
+      padding-top: 120px;
+    }
+
+    &.show-sidebar {
+      .small-header {
+        margin-left: 181px;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.boxed {
+  background-color: $white;
+
+  .profile-picture {
+    background-color: $white;
+  }
+
+  .boxed-wrapper {
+    box-shadow: 0 0 3px 0 $box-wrapper-color-55p;
+    display: block;
+    margin: 0 auto;
+    max-width: 1200px;
+    overflow: hidden;
+    position: relative;
+  }
+}

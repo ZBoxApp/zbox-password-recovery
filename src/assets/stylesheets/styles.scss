@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+// Dependancies
+@import '../../../node_modules/bootstrap/dist/css/bootstrap';
+//@import '~jasny-bootstrap/dist/css/jasny-bootstrap.css';
+@import '../../../node_modules/font-awesome/css/font-awesome';
+//@import '~nprogress/nprogress.css';
+//@import '~toastr/build/toastr.css';
+//@import '~animate.css';
+// styles.scss
+@import 'utils/module';
+@import 'layout/module';
+@import 'components/module';
+
+body {
+  padding-top: 50px;
+}
+
+.token-digit {
+  font-size: 24px;
+  font-weight: bold;
+  width: 140px;
+  height: 45px;
+  text-align: center;
+  margin: 0 5px 0 5px;
+}
+
+meter {
+  width: 100%;
+  padding-top: 5px;
+  display: block;
+}
+
+#password-form {
+  label {
+    font-weight: normal !important;
+  }
+}
+
+.app-logo {
+  max-width: 180px;
+  padding-bottom: 60px;
+}
+
+.zbox-footer {
+  padding-top: 20px;
+  text-align: center;
+  font-size: 90%;
+}
+
+.panel-heading {
+  .heading-buttons {
+    max-width: 100% !important;
+  }
+}

@@ -1,0 +1,724 @@
+// eslint-disable
+
+body {
+  &.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+.sweet-overlay {
+  background-color: rgba($black, .4);
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10000;
+}
+
+.sweet-alert {
+  $width: 478px;
+  $padding: 17px;
+  background-color: $white;
+  border-radius: 5px;
+  display: none;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  left: 50%;
+  margin-left: -($width / 2 + $padding);
+  margin-top: -200px;
+  overflow: hidden;
+  padding: $padding;
+  position: fixed;
+  text-align: center;
+  top: 50%;
+  width: $width;
+  z-index: 99999;
+
+  @media all and (max-width: 540px) {
+    left: 15px;
+    margin-left: 0;
+    margin-right: 0;
+    right: 15px;
+    width: auto;
+  }
+
+  h2 {
+    color: $h2-color;
+    display: block;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 40px;
+    margin: 25px 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+  }
+
+  p {
+    color: $p-color;
+    float: none;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: normal;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: inherit;
+  }
+
+  fieldset {
+    border: 0;
+    position: relative;
+  }
+
+  .sa-error-container {
+    background-color: $bg-error-container;
+    margin-left: -17px;
+    margin-right: -17px;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 10px;
+    transition: padding .15s, max-height .15s;
+
+    &.show {
+      max-height: 100px;
+      padding: 10px 0;
+      transition: padding .25s, max-height .25s;
+    }
+
+    .icon {
+      background-color: $bg-icon;
+      border-radius: 50%;
+      color: $white;
+      display: inline-block;
+      height: 24px;
+      line-height: 24px;
+      margin-right: 3px;
+      text-align: center;
+      width: 24px;
+    }
+
+    p {
+      display: inline-block;
+    }
+  }
+
+  .sa-input-error {
+    height: 20px;
+    opacity: 0;
+    position: absolute;
+    right: 26px;
+    top: 29px;
+    transform: scale(.5);
+    transform-origin: 50% 50%;
+    transition: all .1s;
+    width: 20px;
+
+    &::before,
+    &::after {
+      background-color: $bg-after;
+      border-radius: 3px;
+      content: '';
+      height: 6px;
+      left: 50%;
+      margin-left: -9px;
+      margin-top: -4px;
+      position: absolute;
+      top: 50%;
+      width: 20px;
+    }
+
+    &::before {
+      transform: rotate(-45deg);
+    }
+
+    &::after {
+      transform: rotate(45deg);
+    }
+
+    &.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  input {
+    border: 1px solid $input-border-color;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 1px rgba($black, .06);
+    box-sizing: border-box;
+    display: none;
+    font-size: 18px;
+    height: 43px;
+    margin-bottom: 17px;
+    margin-top: 10px;
+    padding: 0 12px;
+    transition: all .3s;
+    width: 100%;
+
+    &:focus {
+      border: 1px solid $focus-border;
+      box-shadow: 0 0 3px $focus-shadow;
+      outline: none;
+    }
+  }
+
+  &.show-input input {
+    display: block;
+  }
+
+  .sa-confirm-button-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .la-ball-fall {
+    left: 50%;
+    margin-left: -27px;
+    margin-top: 4px;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    visibility: hidden;
+  }
+
+  button {
+    background-color: $btn-blue;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: none;
+    color: $white;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    margin: 26px 5px 0;
+    padding: 10px 32px;
+
+    &:focus {
+      box-shadow: 0 0 2px $btn-focus-one, inset 0 0 0 1px $btn-focus-two;
+      outline: none;
+    }
+
+    &:hover {
+      background-color: darken($btn-blue, 3%);
+    }
+
+    &:active {
+      background-color: darken($btn-blue, 10%);
+    }
+
+    &.cancel {
+      background-color: $btn-gray;
+
+      &:hover {
+        background-color: darken($btn-gray, 3%);
+      }
+
+      &:active {
+        background-color: darken($btn-gray, 10%);
+      }
+
+      // Cancel button should keep the same style
+      &:focus {
+        box-shadow: $focus-cancel-color 0 0 2px, $focus-cancel-color2 0 0 0 1px inset;
+      }
+    }
+
+    &[disabled] {
+      cursor: default;
+      opacity: .6;
+    }
+
+    &.confirm[disabled] {
+      color: transparent;
+
+      ~ .la-ball-fall {
+        opacity: 1;
+        transition-delay: 0s;
+        visibility: visible;
+      }
+    }
+
+    // Removes selection outline in Firefox
+    &::-moz-focus-inner {
+      border: 0;
+    }
+  }
+
+  // Only show focus-style when there is multiple choice of actions
+  &[data-has-cancel-button=false] button {
+    box-shadow: 0;
+  }
+
+  &[data-has-confirm-button=false][data-has-cancel-button=false] {
+    padding-bottom: 40px;
+  }
+
+  .sa-icon {
+    border: 4px solid $gray;
+    border-radius: 50%;
+    box-sizing: content-box;
+    height: 80px;
+    margin: 20px auto;
+    padding: 0;
+    position: relative;
+    width: 80px;
+
+    &.sa-error {
+      border-color: $red;
+
+      .sa-x-mark {
+        display: block;
+        position: relative;
+      }
+
+      .sa-line {
+        background-color: $sweet-red;
+        border-radius: 2px;
+        display: block;
+        height: 5px;
+        position: absolute;
+        top: 37px;
+        width: 47px;
+
+        &.sa-left {
+          left: 17px;
+          transform: rotate(45deg);
+        }
+
+        &.sa-right {
+          right: 16px;
+          transform: rotate(-45deg);
+        }
+      }
+    }
+
+    &.sa-warning {
+      border-color: $sweet-orange;
+
+      .sa-body { // Exclamation mark body
+        background-color: $sweet-orange;
+        border-radius: 2px;
+        height: 47px;
+        left: 50%;
+        margin-left: -2px;
+        position: absolute;
+        top: 10px;
+        width: 5px;
+      }
+      .sa-dot { // Exclamation mark dot
+        background-color: $sweet-orange;
+        border-radius: 50%;
+        bottom: 10px;
+        height: 7px;
+        left: 50%;
+        margin-left: -3px;
+        position: absolute;
+        width: 7px;
+      }
+    }
+
+    &.sa-info {
+      border-color: $sweet-blue;
+
+      &::before { // i-letter body
+        background-color: $sweet-blue;
+        border-radius: 2px;
+        bottom: 17px;
+        content: '';
+        height: 29px;
+        left: 50%;
+        margin-left: -2px;
+        position: absolute;
+        width: 5px;
+      }
+
+      &::after { // i-letter dot
+        background-color: $sweet-blue;
+        border-radius: 50%;
+        content: '';
+        height: 7px;
+        margin-left: -3px;
+        position: absolute;
+        top: 19px;
+        width: 7px;
+      }
+    }
+
+    &.sa-success {
+      border-color: $sweet-green;
+
+      &::before,
+      &::after { // Emulate moving circular line
+        background: $white;
+        border-radius: 50%;
+        content: '';
+        height: 120px;
+        position: absolute;
+        transform: rotate(45deg);
+        width: 60px;
+      }
+
+      &::before {
+        border-radius: 120px 0 0 120px;
+        left: -33px;
+        top: -7px;
+        transform: rotate(-45deg);
+        transform-origin: 60px 60px;
+      }
+
+      &::after {
+        border-radius: 0 120px 120px 0;
+        left: 30px;
+        top: -11px;
+        transform: rotate(-45deg);
+        transform-origin: 0 60px;
+      }
+
+      .sa-placeholder { // Ring
+        border: 4px solid rgba($sweet-green, .2);
+        border-radius: 50%;
+        box-sizing: content-box;
+        height: 80px;
+        left: -4px;
+        position: absolute;
+        top: -4px;
+        width: 80px;
+        z-index: 2;
+      }
+
+      .sa-fix { // Hide corners left from animation
+        background-color: $white;
+        height: 90px;
+        left: 28px;
+        position: absolute;
+        top: 8px;
+        transform: rotate(-45deg);
+        width: 5px;
+        z-index: 1;
+      }
+
+      .sa-line {
+        background-color: $sweet-green;
+        border-radius: 2px;
+        display: block;
+        height: 5px;
+        position: absolute;
+        z-index: 2;
+
+        &.sa-tip {
+          left: 14px;
+          top: 46px;
+          transform: rotate(45deg);
+          width: 25px;
+        }
+
+        &.sa-long {
+          right: 8px;
+          top: 38px;
+          transform: rotate(-45deg);
+          width: 47px;
+        }
+      }
+    }
+
+    &.sa-custom {
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      border: 0;
+      border-radius: 0;
+    }
+  }
+
+}
+
+// Animations
+
+@mixin keyframes($animation-name) {
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation($str) {
+  animation: #{$str};
+}
+
+// Modal animation
+
+@include keyframes(showSweetAlert) {
+  0% {
+    transform: scale(.7);
+  }
+  45% {
+    transform: scale(1.05);
+  }
+  80% {
+    transform: scale(.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@include keyframes(hideSweetAlert) {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.5);
+  }
+}
+
+@include keyframes(slideFromTop) {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 50%;
+  }
+}
+
+@include keyframes(slideToTop) {
+  0% {
+    top: 50%;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@include keyframes(slideFromBottom) {
+  0% {
+    top: 70%;
+  }
+  100% {
+    top: 50%;
+  }
+}
+
+@include keyframes(slideToBottom) {
+  0% {
+    top: 50%;
+  }
+  100% {
+    top: 70%;
+  }
+}
+
+.showSweetAlert {
+  &[data-animation=pop] {
+    @include animation('showSweetAlert 0.3s');
+  }
+
+  &[data-animation=none] {
+    @include animation('none');
+  }
+
+  &[data-animation=slide-from-top] {
+    @include animation('slideFromTop 0.3s');
+  }
+
+  &[data-animation=slide-from-bottom] {
+    @include animation('slideFromBottom 0.3s');
+  }
+}
+
+.hideSweetAlert {
+  &[data-animation=pop] {
+    @include animation('hideSweetAlert 0.2s');
+  }
+
+  &[data-animation=none] {
+    @include animation('none');
+  }
+
+  &[data-animation=slide-from-top] {
+    @include animation('slideToTop 0.4s');
+  }
+
+  &[data-animation=slide-from-bottom] {
+    @include animation('slideToBottom 0.3s');
+  }
+}
+
+// Success icon animation
+
+@include keyframes(animateSuccessTip) {
+  0% {
+    left: 1px;
+    top: 19px;
+    width: 0;
+  }
+
+  54% {
+    left: 1px;
+    top: 19px;
+    width: 0;
+  }
+
+  70% {
+    left: -8px;
+    top: 37px;
+    width: 50px;
+  }
+
+  84% {
+    left: 21px;
+    top: 48px;
+    width: 17px;
+  }
+
+  100% {
+    left: 14px;
+    top: 45px;
+    width: 25px;
+  }
+}
+
+@include keyframes(animateSuccessLong) {
+  0% {
+    right: 46px;
+    top: 54px;
+    width: 0;
+  }
+
+  65% {
+    right: 46px;
+    top: 54px;
+    width: 0;
+  }
+
+  84% {
+    right: 0;
+    top: 35px;
+    width: 55px;
+  }
+
+  100% {
+    right: 8px;
+    top: 38px;
+    width: 47px;
+  }
+}
+
+@include keyframes(rotatePlaceholder) {
+  0% {
+    transform: rotate(-45deg);
+  }
+
+  5% {
+    transform: rotate(-45deg);
+  }
+
+  12% {
+    transform: rotate(-405deg);
+  }
+
+  100% {
+    transform: rotate(-405deg);
+  }
+}
+
+.animateSuccessTip {
+  @include animation('animateSuccessTip 0.75s');
+}
+
+.animateSuccessLong {
+  @include animation('animateSuccessLong 0.75s');
+}
+
+.sa-icon.sa-success.animate::after {
+  @include animation('rotatePlaceholder 4.25s ease-in');
+}
+
+// Error icon animation
+
+@include keyframes(animateErrorIcon) {
+  0% {
+    opacity: 0;
+    transform: rotateX(100deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+.animateErrorIcon {
+  @include animation('animateErrorIcon 0.5s');
+}
+
+@include keyframes(animateXMark) {
+  0% {
+    margin-top: 26px;
+    opacity: 0;
+    transform: scale(.4);
+  }
+
+  50% {
+    margin-top: 26px;
+    opacity: 0;
+    transform: scale(.4);
+  }
+
+  80% {
+    margin-top: -6px;
+    transform: scale(1.15);
+  }
+
+  100% {
+    margin-top: 0;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animateXMark {
+  @include animation('animateXMark 0.5s');
+}
+
+@include keyframes(pulseWarning) {
+  0% {
+    border-color: $keyframe-bg-color;
+  }
+
+  100% {
+    border-color: $keyframe-bg-color2;
+  }
+}
+
+.pulseWarning {
+  @include animation('pulseWarning 0.75s infinite alternate');
+}
+
+@include keyframes(pulseWarningIns) {
+  0% {
+    background-color: $keyframe-bg-color;
+  }
+
+  100% {
+    background-color: $keyframe-bg-color2;
+  }
+}
+
+.pulseWarningIns {
+  @include animation('pulseWarningIns 0.75s infinite alternate');
+}
+
+@include keyframes(rotate-loading) {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@import 'loader_animation';

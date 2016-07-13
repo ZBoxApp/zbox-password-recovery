@@ -1,0 +1,46 @@
+.wrapper-importer {
+  padding: 10px 0;
+}
+
+.col-import {
+  float: left;
+  max-height: 300px;
+  overflow: auto;
+  padding: 5px;
+  width: 20%;
+
+  .wrap-border-col {
+    &.missing-option {
+      border: 2px solid $red;
+
+      .list-attr {
+        background: $bg-import-error;
+      }
+    }
+
+    &.ok-option {
+      border: 2px solid $border-color-ok;
+
+      .list-attr {
+        background: $bg-import-ok;
+      }
+    }
+
+    .list-attr {
+      margin-bottom: 0;
+      overflow: hidden;
+      padding: 2px;
+
+      li {
+        border-top: 1px dotted $white;
+        overflow: hidden;
+        padding: 5px 0;
+        text-overflow: ellipsis;
+
+        &:last-child {
+          border-bottom: 1px dotted $white;
+        }
+      }
+    }
+  }
+}

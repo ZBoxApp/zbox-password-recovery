@@ -1,3 +1,5 @@
+"use strict";
+
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var express = require('express');
@@ -5,28 +7,41 @@ var favicon = require('serve-favicon');
 var fs = require('fs');
 var logger = require('morgan');
 var parseServer = require('parse-server').ParseServer;
+var parseDashboard = require('parse-dashboard');
 var path = require('path');
-var yaml = require('js-yaml');
 
 var routes = require(path.join(__dirname, "src/routes/index"));
 
 var app = express();
 
-let parseConf = yaml.safeLoad(fs.readFileSync(path.join(__dirname, "src/config/parse.yml"), "utf-8"));
+var dashboard = new parseDashboard({
+    "allowInsecureHTTP": true,
+	"apps": [
+		{
+			"serverURL": process.env.PARSE_SERVER_URL,
+			"appId": 'APPRESET',
+			"masterKey": process.env.PARSE_MASTER_KEY,
+			"appName": 'ZBox Password Reset'
+		}
+	],
+	"users": [
+    {
+      "user": process.env.DASHBOARD_USER,
+      "pass": process.env.DASHBOARD_PASS
+    }]
+}, true);
 
-const instancesAPI = {};
 
-for (appId in parseConf.apps) {
-    if (parseConf.apps.hasOwnProperty(appId)) {
-        let options = parseConf.apps[appId];
-        options['appId'] = appId;
-        options.cloud = path.join(__dirname, 'src/cloud/' + options.cloud);
+app.use(process.env.PARSE_ENDPOINT_API, new parseServer({
+    appId: 'APPRESET',
+    databaseURI: process.env.PARSE_DATABASE,
+    cloud: path.join(__dirname, 'src/cloud/main.js'),
+    masterKey: process.env.PARSE_MASTER_KEY,
+    restAPIKey: process.env.PARSE_REST_API_KEY,
+    serverURL: process.env.PARSE_SERVER_URL
+}));
 
-        instancesAPI[appId] = new parseServer(options);
-
-        app.use(options.endPointAPI, instancesAPI[appId]);
-    }
-}
+app.use('/dashboard', dashboard);
 
 // view engine setup
 app.set('views', path.join(__dirname, "src", "views"));
@@ -84,6 +99,5 @@ app.use((err, req, res, next) => {
         error: {}
     });
 });
-
 
 module.exports = app;
