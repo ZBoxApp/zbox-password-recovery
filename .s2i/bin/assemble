@@ -9,8 +9,7 @@ echo "ls /tmp"
 ls /tmp/
 if [ "$(ls /tmp/artifacts 2>/dev/null)" ]; then
     echo "Copiando node modules"
-    mkdir -p ./node_modules
-    mv /tmp/artifacts/node_modules/* ./node_modules/
+    mv /tmp/artifacts/* ./
     echo "Listando archivos copiados"
     ls ./
 fi
