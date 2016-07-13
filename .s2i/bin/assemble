@@ -24,13 +24,13 @@ npm install -d
 echo "---> El Path de comandos es:"
 echo $PATH
 
-echo "---> Los ejecutables de node en /opt/app-root/src/node_modules/.bin/ son:"
-ls -l /opt/app-root/src/node_modules/.bin/
-
 echo "---> El contenido de los modules es:"
 ls -l /opt/app-root/src/node_modules/
 
 mkdir -p /opt/app-root/src/node_modules/.bin/
+
+echo "---> Los ejecutables de node en /opt/app-root/src/node_modules/.bin/ son:"
+ls -l /opt/app-root/src/node_modules/.bin/
 
 ln -s /opt/app-root/src/node_modules/webpack/bin/webpack.js /opt/app-root/src/node_modules/.bin/
 ln -s /opt/app-root/src/node_modules/gulp/bin/gulp.js /opt/app-root/src/node_modules/.bin/
