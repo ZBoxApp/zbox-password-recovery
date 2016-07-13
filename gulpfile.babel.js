@@ -58,7 +58,7 @@ gulp.task('images', function() {
         .pipe(gulp.dest(paths.dist.images));
 });
 
-gulp.task('styles', ['fonts'], function () {
+gulp.task('styles', function () {
     return gulp.src(path.join(paths.src.styles, "*.s+(a|c)ss"))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}))
@@ -68,5 +68,6 @@ gulp.task('styles', ['fonts'], function () {
         .pipe(gulp.dest(path.join(paths.dist.styles)));
 });
 
-gulp.task('default', ['lint', 'styles', 'images']);
+gulp.task('default', ['lint', 'assets']);
+gulp.task('assets', ['styles', 'images', 'fonts']);
 gulp.task('lint', ['sass-lint', 'js-lint']);

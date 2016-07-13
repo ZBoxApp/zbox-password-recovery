@@ -65,7 +65,7 @@ export default class TokenInputForm extends React.Component {
                                    onChange={this.handleChange} name="part1"/><i className="fa fa-minus"/>
                             <input className="token-digit" type="text" onKeyPress={this.handleKeyPress} maxLength="5"
                                    onChange={this.handleChange} name="part2"/>
-                            <span class="help-block">Los campos son sensibles a mayúsculas y minúsculas</span>
+                            <span className="help-block">Los campos son sensibles a mayúsculas y minúsculas</span>
                         </div>
                     </div>
                     <div className="form-group">

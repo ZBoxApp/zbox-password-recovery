@@ -47,3 +47,9 @@ meter {
   text-align: center;
   font-size: 90%;
 }
+
+.panel-heading {
+  .heading-buttons {
+    max-width: 100% !important;
+  }
+}
