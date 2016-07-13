@@ -1,4 +1,3 @@
 #!/bin/bash
 set -e
-
 tar -C /opt/app-root/src -cf - node_modules

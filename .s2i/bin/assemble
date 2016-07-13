@@ -4,17 +4,12 @@
 
 set -e
 
-echo "Aqui recuperamos los Artifacts"
-echo "ls /tmp"
-ls /tmp/
+echo "Comenzando Build Incremental"
 if [ "$(ls /tmp/artifacts 2>/dev/null)" ]; then
     echo "Copiando node modules"
     mv /tmp/artifacts/* ./
-    echo "Listando archivos copiados"
-    ls ./
-    echo "Listando node_modules bin"
-    ls -l ./node_modules/.bin
 fi
+
 
 echo "---> Installing application source"
 cp -Rf /tmp/src/. ./
