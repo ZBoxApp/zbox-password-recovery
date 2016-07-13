@@ -107,6 +107,7 @@ function sendEmail(to, name, tokenRequest, callback) {
 
 function sendSMS(to, tokenRequest, callback) {
     let token = tokenRequest.toJSON().objectId;
+    token = `${token.substr(0,5)}-${token.substr(5,token.length)}`;
 
     twilio.sendMessage({
         to: to, // Any number Twilio can deliver to
