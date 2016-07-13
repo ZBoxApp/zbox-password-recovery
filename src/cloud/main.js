@@ -76,10 +76,10 @@ function getRecoveryMethods(account) {
 function sendEmail(to, name, tokenRequest, callback) {
     let transporter = nodemailer.createTransport(mailerConfig);
     let token = tokenRequest.toJSON().objectId;
-    let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT/60 : process.env.SECURITY_TOKEN_TIMEOUT;
+    let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT / 60 : process.env.SECURITY_TOKEN_TIMEOUT;
     let units = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? 'horas' : 'minutos';
 
-    token = `${token.substr(0,5)}-${token.substr(5,token.length)}`;
+    token = `${token.substr(0, 5)}-${token.substr(5, token.length)}`;
 
     let url = `https://${process.env.HOSTNAME}?e=${tokenRequest.get('account')}&t=${token}`;
 
@@ -107,7 +107,7 @@ function sendEmail(to, name, tokenRequest, callback) {
 
 function sendSMS(to, tokenRequest, callback) {
     let token = tokenRequest.toJSON().objectId;
-    token = `${token.substr(0,5)}-${token.substr(5,token.length)}`;
+    token = `${token.substr(0, 5)}-${token.substr(5, token.length)}`;
 
     twilio.sendMessage({
         to: to, // Any number Twilio can deliver to
@@ -150,7 +150,7 @@ Parse.Cloud.define('startReset', (request, response) => {
             let query = new Parse.Query(TokenRequest);
             query.equalTo("account", email);
 
-            let _accountName= getAccountName(account);
+            let _accountName = getAccountName(account);
 
             query.find({
                 success: (results) => {
@@ -250,7 +250,7 @@ Parse.Cloud.define('sendToken', (request, response) => {
             let query = new Parse.Query(TokenRequest);
             query.equalTo("account", email);
 
-            let _accountName= getAccountName(account);
+            let _accountName = getAccountName(account);
 
             query.find({
                 success: (results) => {
@@ -373,9 +373,22 @@ Parse.Cloud.define('changePassword', (request, response) => {
                     if (error) {
                         return response.error(RESET_ERROR.NOT_EXIST);
                     } else {
-                        zimbraApi.modifyAccount(account.id, {zimbraAccountStatus: 'active'});
+                        let batch = [
+                            zimbraApi.modifyAccount(account.id, {zimbraAccountStatus: 'active'}),
+                            zimbraApi.setPassword(account.id, password)
+                        ];
 
-                        account.setPassword(password, () => {
+                        zimbraApi.makeBatchRequest(batch, (err, data) => {
+                            if (data.errors && data.errors.length > 0) {
+                                let desc = "";
+
+                                data.errors.forEach((element, index)=> {
+                                    desc += element.extra.reason + "\n";
+                                });
+
+                                return response.error({description: desc})
+                            }
+
                             return response.success({
                                 redirect: process.env.ZIMBRA_WEBMAIL_URL
                             });
