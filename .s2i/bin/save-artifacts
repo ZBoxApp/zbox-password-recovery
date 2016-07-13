@@ -2,5 +2,4 @@
 
 echo "Iniciando Save artifacts"
 echo "Cambio de Directorio"
-cd /opt/app-root/src
-tar cf - node_modules
+tar -C /opt/app-root/src -cf - node_modules
