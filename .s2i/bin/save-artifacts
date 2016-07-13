@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-tar -C /opt/app-root/src -cfh - node_modules
+tar -C /opt/app-root/src -cf --dereference - node_modules
