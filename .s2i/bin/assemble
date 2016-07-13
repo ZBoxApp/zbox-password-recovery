@@ -5,9 +5,10 @@
 set -e
 
 echo "Aqui recuperamos los Artifacts"
-ls /tmp/src
-if [ "$(ls /tmp/s2i/artifacts/ 2>/dev/null)" ]; then
-    mv /tmp/s2i/artifacts/* ./src
+echo "ls /tmp"
+ls /tmp/
+if [ "$(ls /tmp/artifacts 2>/dev/null)" ]; then
+    mv /tmp/artifacts/node_modules ./src
 fi
 
 echo "---> Installing application source"
