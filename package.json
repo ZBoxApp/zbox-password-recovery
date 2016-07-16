@@ -1,6 +1,6 @@
 {
   "name": "zbox-password-recovery",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "scripts": {
     "lint": "./node_modules/.bin/gulp lint",
