@@ -11,6 +11,7 @@ export default class SendTokenForm extends React.Component {
         super(props);
         this.handleSendEmail = this.handleSendEmail.bind(this);
         this.handleSendSMS = this.handleSendSMS.bind(this);
+        this.handleSendTwitter = this.handleSendTwitter.bind(this);
     }
 
     handleSendEmail(e) {
@@ -19,7 +20,7 @@ export default class SendTokenForm extends React.Component {
             return;
         }
 
-        this.props.nextStep(true);
+        this.props.nextStep('email');
     }
 
     handleSendSMS(e) {
@@ -28,7 +29,16 @@ export default class SendTokenForm extends React.Component {
             return;
         }
 
-        this.props.nextStep(false);
+        this.props.nextStep('sms');
+    }
+
+    handleSendTwitter(e) {
+        if (this.props.ajaxInProgress) {
+            e.preventDefault();
+            return;
+        }
+
+        this.props.nextStep('twitter');
     }
 
     render() {
@@ -41,15 +51,21 @@ export default class SendTokenForm extends React.Component {
                         <div className="col-sm-12">
                             <Button
                                 btnAttrs={{onClick: this.handleSendEmail, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Enviar
-                                correo a {Utils.protectEmail(this.props.secondaryEmail)}</Button>
+                                correo a {this.props.secondaryEmail}</Button>
                         </div>
                     </div>
-                    <p className="text-center">o</p>
+                    <div className="form-group">
+                        <div className="col-sm-12">
+                            <Button
+                                btnAttrs={{onClick: this.handleSendTwitter, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Enviar
+                                Mensaje Directo de Twitter a {this.props.twitter}</Button>
+                        </div>
+                    </div>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <Button
                                 btnAttrs={{onClick: this.handleSendSMS, className: "btn btn-info btn-block", href: "#", disabled: this.props.ajaxInProgress}}>Enviar
-                                SMS a {Utils.protectPhone(this.props.phone)}</Button>
+                                SMS a {this.props.phone}</Button>
                         </div>
                     </div>
                 </form>

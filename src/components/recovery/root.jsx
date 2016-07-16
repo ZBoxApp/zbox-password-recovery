@@ -1,14 +1,13 @@
 "use strict";
 
-import React from 'react'
-import ajax from 'superagent';
-import swal from 'sweetalert';
-
-import Step1 from './step1.jsx';
-import Step2 from './step2.jsx';
-import Step3 from './step3.jsx';
-import Step4 from './step4.jsx';
-import * as Utils from '../../utils/utils.jsx';
+import React from "react";
+import ajax from "superagent";
+import swal from "sweetalert";
+import Step1 from "./step1.jsx";
+import Step2 from "./step2.jsx";
+import Step3 from "./step3.jsx";
+import Step4 from "./step4.jsx";
+import * as Utils from "../../utils/utils.jsx";
 
 export default class Root extends React.Component {
     constructor(props) {
@@ -37,6 +36,8 @@ export default class Root extends React.Component {
         this.toStep4 = this.toStep4.bind(this);
         this.finish = this.finish.bind(this);
         this.resetState = this.resetState.bind(this);
+        this.getReciever = this.getReciever.bind(this);
+        this.getRecieverType = this.getRecieverType.bind(this);
     }
 
     hasValidParameters(query) {
@@ -100,11 +101,12 @@ export default class Root extends React.Component {
                     email: data.email,
                     name: data.name,
                     secondaryEmail: data.hasOwnProperty('secondaryEmail') ? data.secondaryEmail : null,
-                    phone: data.hasOwnProperty('phone') ? data.phone : null
+                    phone: data.hasOwnProperty('phone') ? data.phone : null,
+                    twitter: data.hasOwnProperty('twitter') ? data.twitter : null,
                 };
 
                 if (state.step === 3) {
-                    state.toEmail = state.secondaryEmail !== null
+                    state.recieverType = component.getRecieverType(state);
                 }
 
                 component.setState(state);
@@ -131,16 +133,30 @@ export default class Root extends React.Component {
         }
     }
 
-    toStep3(email) {
+    toStep3(type) {
         let params = {
             email: this.state.email,
-            type: email ? 'email' : 'sms'
+            type: type
         };
+
+        let desc = "";
+
+        switch (type) {
+            case "email":
+                desc = "correo electrónico";
+                break;
+            case "sms":
+                desc = "teléfono";
+                break;
+            case "twitter":
+                desc = "twitter";
+                break;
+        }
 
         this.ajaxCall(this, '/parse/functions/sendToken', params, (component, data)=> {
             swal({
                 title: "Código envíado",
-                text: "Se ha enviado la información a su " + (email ? 'email' : 'teléfono'),
+                text: "Se ha enviado la información a su " + desc,
                 type: "success",
                 showCancelButton: false,
                 confirmButtonText: "Aceptar",
@@ -148,7 +164,7 @@ export default class Root extends React.Component {
             }, function () {
                 component.setState({
                     step: 3,
-                    toEmail: email
+                    recieverType: component.getRecieverType(component.state)
                 });
             });
         });
@@ -203,8 +219,40 @@ export default class Root extends React.Component {
             email: null,
             secondaryEmail: null,
             phone: null,
-            toEmail: null
+            recieverType: null
         })
+    }
+
+    getReciever(type) {
+        switch (type) {
+            case "email":
+                return this.state.secondaryEmail;
+                break;
+            case "sms":
+                return this.state.phone;
+                break;
+            case "twitter":
+                return this.state.twitter;
+                break;
+            default:
+                return null;
+        }
+    }
+
+    getRecieverType(state) {
+        if (state.secondaryEmail !== null) {
+            return 'email';
+        }
+
+        if (state.twitter !== null) {
+            return 'twitter';
+        }
+
+        if (state.phone !== null) {
+            return 'sms';
+        }
+
+        return null;
     }
 
     getCurrentStep() {
@@ -218,13 +266,14 @@ export default class Root extends React.Component {
             case 2:
                 return (
                     <Step2 email={this.state.email} secondaryEmail={this.state.secondaryEmail} name={this.state.name}
-                           phone={this.state.phone} nextStep={this.toStep3} ajaxInProgress={this.state.ajaxInProgress}/>
+                           phone={this.state.phone} twitter={this.state.twitter} nextStep={this.toStep3}
+                           ajaxInProgress={this.state.ajaxInProgress}/>
                 );
                 break;
             case 3:
                 return (
                     <Step3 email={this.state.email} name={this.state.name}
-                           reciever={this.state.toEmail ? this.state.secondaryEmail : this.state.phone}
+                           reciever={this.getReciever(this.state.recieverType)}
                            onChange={this.updateFromInput} ajaxInProgress={this.state.ajaxInProgress}
                            nextStep={this.toStep4}/>
                 );

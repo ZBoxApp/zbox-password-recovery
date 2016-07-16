@@ -9,6 +9,14 @@ const Utils = require('../utils/utils.jsx');
 const TokenRequest = Parse.Object.extend("TokenRequest");
 const securityStatus = process.env.SECURITY_RESTRINGE_STATUS.split(',');
 const twilio = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_AUTHTOKEN);
+const Twitter = require('twitter');
+
+const twitterApi = new Twitter({
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+});
 
 const zimbraApi = new ZimbraAdminApi({
     'url': process.env.ZIMBRA_HOST,
@@ -19,6 +27,7 @@ const zimbraApi = new ZimbraAdminApi({
 const ZIMLET_NAME = 'zbox_pr';
 const ZIMLET_PARAM_EMAIL = 'recovery_email';
 const ZIMLET_PARAM_PHONE = 'recovery_phone';
+const ZIMLET_PARAM_TWITTER = 'recovery_twitter';
 
 const mailerConfig = {
     host: process.env.MAILER_SMTP,
@@ -40,16 +49,17 @@ const RESET_ERROR = {
     UNAUTHORIZED: {code: 'ZB006', description: 'No esta autorizado para realizar esta operación'},
     TOKEN_EXPIRED: {code: 'ZB007', description: 'El token ha expirado'},
     TOKEN_INVALID: {code: 'ZB008', description: 'El token no es válido'},
-    PASSWORD_SHORT: {code: 'ZB009', description: 'El password ingresado es demasiado corto'}
+    PASSWORD_SHORT: {code: 'ZB009', description: 'El password ingresado es demasiado corto'},
+    TWITTER: {code: 'ZB010', description: 'Error enviando mensaje, recuerde que debe seguirnos en twitter para utilizar este método'},
 };
 
-function DEBUG(msg, error) {
+const DEBUG = (msg, error) => {
     if (process.env.DEBUG) {
         console.log(msg, error);
     }
-}
+};
 
-function getRecoveryMethods(account) {
+const getRecoveryMethods = (account) => {
     let methods = {};
 
     if (account.attrs.hasOwnProperty('zimbraZimletUserProperties')) {
@@ -65,15 +75,18 @@ function getRecoveryMethods(account) {
                     case ZIMLET_PARAM_EMAIL:
                         methods['email'] = item[2];
                         break;
+                    case ZIMLET_PARAM_TWITTER:
+                        methods['twitter'] = item[2];
+                        break;
                 }
             }
         });
     }
 
     return methods;
-}
+};
 
-function sendEmail(to, name, tokenRequest, callback) {
+const sendEmail = (to, name, tokenRequest, callback) => {
     let transporter = nodemailer.createTransport(mailerConfig);
     let token = tokenRequest.toJSON().objectId;
     let duracion = process.env.SECURITY_TOKEN_TIMEOUT > 60 ? process.env.SECURITY_TOKEN_TIMEOUT / 60 : process.env.SECURITY_TOKEN_TIMEOUT;
@@ -103,9 +116,9 @@ function sendEmail(to, name, tokenRequest, callback) {
     }, (error, data) => {
         callback(error, data)
     });
-}
+};
 
-function sendSMS(to, tokenRequest, callback) {
+const sendSMS = (to, tokenRequest, callback) => {
     let token = tokenRequest.toJSON().objectId;
     token = `${token.substr(0, 5)}-${token.substr(5, token.length)}`;
 
@@ -116,9 +129,21 @@ function sendSMS(to, tokenRequest, callback) {
     }, function (err, responseData) { //this function is executed when a response is received from Twilio
         callback(err, responseData);
     });
-}
+};
 
-function getAccountName(account) {
+const sendTwitterDM = (to, tokenRequest, callback) => {
+    let token = tokenRequest.toJSON().objectId;
+    token = `${token.substr(0, 5)}-${token.substr(5, token.length)}`;
+
+    twitterApi.post('direct_messages/new', {
+        screen_name: to,
+        text: `ZBox Mail: Tu Código de recuperación de contraseña es: ${token}`
+    }, (error, tweet, response) => {
+        callback(error, response);
+    });
+};
+
+const getAccountName = (account) => {
     if (account.attrs.hasOwnProperty('displayName')) {
         return account.attrs.displayName;
     }
@@ -132,7 +157,7 @@ function getAccountName(account) {
     }
 
     return '';
-}
+};
 
 Parse.Cloud.define('startReset', (request, response) => {
     let email = request.params.email || '';
@@ -205,6 +230,19 @@ Parse.Cloud.define('startReset', (request, response) => {
                                             });
                                         }
                                     });
+                                } else if (recoveryMethods.hasOwnProperty('twitter')) {
+                                    sendTwitterDM(recoveryMethods.twitter, tokenRequest, (error, data) => {
+                                        if (error) {
+                                            return response.error(RESET_ERROR.TWITTER);
+                                        } else {
+                                            return response.success({
+                                                send: true,
+                                                name: _accountName,
+                                                email: email,
+                                                twitter: Utils.protectGeneric(recoveryMethods.twitter, 4)
+                                            });
+                                        }
+                                    });
                                 } else {
                                     DEBUG('UNKNOWN ERROR', null);
                                     return response.error(RESET_ERROR.UNKNOWN);
@@ -215,7 +253,8 @@ Parse.Cloud.define('startReset', (request, response) => {
                                     email: email,
                                     send: false,
                                     secondaryEmail: Utils.protectEmail(recoveryMethods.email),
-                                    phone: Utils.protectPhone(recoveryMethods.phone)
+                                    phone: Utils.protectPhone(recoveryMethods.phone),
+                                    twitter: Utils.protectGeneric(recoveryMethods.twitter, 4)
                                 });
                             }
                         },
@@ -290,6 +329,20 @@ Parse.Cloud.define('sendToken', (request, response) => {
                                                 name: _accountName,
                                                 email: email,
                                                 phone: Utils.protectPhone(recoveryMethods.phone)
+                                            });
+                                        }
+                                    });
+                                    break;
+                                case 'twitter':
+                                    sendTwitterDM(recoveryMethods.twitter, tokenRequest, (error, data) => {
+                                        if (error) {
+                                            return response.error(RESET_ERROR.TWITTER);
+                                        } else {
+                                            return response.success({
+                                                send: true,
+                                                name: _accountName,
+                                                email: email,
+                                                twitter: Utils.protectGeneric(recoveryMethods.twitter, 4)
                                             });
                                         }
                                     });

@@ -3,29 +3,35 @@
 const crypto = require('crypto');
 
 
-function protectPhone(phone) {
+const protectPhone = (phone)=> {
     let a = phone.substring(0, 2);
     let b = phone.substring(9);
 
     return `${a}*****${b}`;
-}
+};
 
-function protectEmail(email) {
+const protectGeneric = (string, start = 3) => {
+    let a = string.substring(0, string.length > start ? start : string.length / 2);
+
+    return `${a}*******`;
+};
+
+const protectEmail = (email) => {
     let split = email.split("@");
     let a = split[0].substring(0, 2);
     let b = split[1][0];
     let c = split[1].substring(split[1].lastIndexOf("."));
 
     return `${a}****@${b}***${c}`;
-}
+};
 
-function isValidEmail(email) {
+const isValidEmail = (email) => {
     var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     return emailRegex.test(email);
-}
+};
 
-function generateToken(length = 6, uppercase = false) {
+const generateToken = (length = 6, uppercase = false) => {
     if ((0 >= length) || (40 < length)) {
         throw new Error('La longitud del token debe estar en el rango entre 1 y 40')
     }
@@ -43,9 +49,9 @@ function generateToken(length = 6, uppercase = false) {
     }
 
     return resultado;
-}
+};
 
-function mt_rand(min, max) {
+const mt_rand = (min, max) => {
     var argc = arguments.length;
     if (argc === 0) {
         min = 0;
@@ -57,11 +63,12 @@ function mt_rand(min, max) {
         max = parseInt(max, 10);
     }
     return Math.floor(Math.random() * (max - min + 1)) + min
-}
+};
 
 module.exports = {
     protectPhone: protectPhone,
     protectEmail: protectEmail,
     isValidEmail: isValidEmail,
-    generateToken: generateToken
+    generateToken: generateToken,
+    protectGeneric: protectGeneric
 };

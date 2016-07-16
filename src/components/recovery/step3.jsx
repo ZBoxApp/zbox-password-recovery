@@ -18,15 +18,6 @@ export default class TokenInputForm extends React.Component {
         this.handleNext = this.handleNext.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.protectReciever = this.protectReciever.bind(this);
-    }
-
-    protectReciever(data) {
-        if (data.toString().indexOf('@') > 0) {
-            return Utils.protectEmail(data);
-        } else {
-            return Utils.protectPhone(data);
-        }
     }
 
     handleChange(event) {
@@ -58,7 +49,7 @@ export default class TokenInputForm extends React.Component {
             <Panel hasHeader={true} title={`Hola ${this.props.name} - ${this.props.email}`}>
                 <form method="post" className="form-horizontal" noValidate>
                     <p className="text-center">Ingresa el código que hemos enviado
-                        a {this.protectReciever(this.props.reciever)}</p>
+                        a {this.props.reciever}</p>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
                             <input className="token-digit" type="text" onKeyPress={this.handleKeyPress} maxLength="5"
