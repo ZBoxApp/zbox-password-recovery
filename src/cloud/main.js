@@ -252,9 +252,9 @@ Parse.Cloud.define('startReset', (request, response) => {
                                     name: _accountName,
                                     email: email,
                                     send: false,
-                                    secondaryEmail: Utils.protectEmail(recoveryMethods.email),
-                                    phone: Utils.protectPhone(recoveryMethods.phone),
-                                    twitter: Utils.protectGeneric(recoveryMethods.twitter, 4)
+                                    secondaryEmail: recoveryMethods.email ? Utils.protectEmail(recoveryMethods.email) : null,
+                                    phone: recoveryMethods.phone ? Utils.protectPhone(recoveryMethods.phone) : null,
+                                    twitter: recoveryMethods.twitter ? Utils.protectGeneric(recoveryMethods.twitter, 4) : null
                                 });
                             }
                         },
