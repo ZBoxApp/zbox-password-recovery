@@ -1,0 +1,106 @@
+{
+    "name": "ZBox Password Recovery Tool",
+    "description": "Tool used to recover password from Zimbra Platform",
+    "repository": "https://github.com/ZBoxApp/zbox-password-recovery-zimlet",
+    "logo": "https://node-js-sample.herokuapp.com/node.png",
+    "keywords": [
+        "node",
+        "express",
+        "static",
+        "zbox",
+        "zimbra",
+        "password",
+        "password recovery"
+    ],
+    "env": {
+        "PORT": {
+            "description": "Application port.",
+            "value": "80"
+        },
+        "HOSTNAME": {
+            "description": "The application url."
+        },
+        "MAILER_SMTP": {
+            "description": "Mailer SMTP server to send emails."
+        },
+        "MAILER_PORT": {
+            "description": "Mailer port server to send emails."
+        },
+        "MAILER_USERNAME": {
+            "description": "Mailer user to send emails."
+        },
+        "MAILER_PASSWORD": {
+            "description": "Mailer password to send emails."
+        },
+        "MAILER_SSL": {
+            "description": "Needs SSL?.",
+            "value": "0"
+        },
+        "ZIMBRA_HOST": {
+            "description": "Zimbra host server platform."
+        },
+        "ZIMBRA_USERNAME": {
+            "description": "Zimbra user."
+        },
+        "ZIMBRA_PASSWORD": {
+            "description": "Zimbra password."
+        },
+        "ZIMBRA_WEBMAIL_URL": {
+            "description": "Zimbra webmail URL."
+        },
+        "TWILIO_ACCOUNTSID": {
+            "description": "Twilio Account SID to send SMS."
+        },
+        "TWILIO_AUTHTOKEN": {
+            "description": "Twilio Auth Token to send SMS."
+        },
+        "TWILIO_PHONE": {
+            "description": "Twilio phone to send SMS."
+        },
+        "SECURITY_RESTRINGE_STATUS": {
+            "description": "Coma separated status values which can't use this tool to recover passwords."
+        },
+        "SECURITY_TOKEN_TIMEOUT": {
+            "description": "Expiration time of tokens in minutes.",
+            "value": "60"
+        },
+        "SECURITY_PASSWORD_POLICY_SIZE": {
+            "description": "Zimbra webmail URL.",
+            "value": "8"
+        },
+        "PARSE_DATABASE": {
+            "description": "Mongo URI connection string."
+        },
+        "PARSE_MASTER_KEY": {
+            "description": "Parse master key."
+        },
+        "PARSE_REST_API_KEY": {
+            "description": "Parse rest api key."
+        },
+        "PARSE_ENDPOINT_API": {
+            "description": "Parse endpoint.",
+            "value": "/parse"
+        },
+        "PARSE_SERVER_URL": {
+            "description": "Parse server URL."
+        },
+        "DASHBOARD_USER": {
+            "description": "Parse dashboard username."
+        },
+        "DASHBOARD_PASSWORD": {
+            "description": "Parse dashboard password."
+        },
+        "TWITTER_CONSUMER_KEY": {
+            "description": "Twitter consumer key."
+        },
+        "TWITTER_CONSUMER_SECRET": {
+            "description": "Twitter consumer secret."
+        },
+        "TWITTER_ACCESS_TOKEN_KEY": {
+            "description": "Twitter access token key."
+        },
+        "TWITTER_ACCESS_TOKEN_SECRET": {
+            "description": "Twitter access token secret."
+        }
+    }
+}
