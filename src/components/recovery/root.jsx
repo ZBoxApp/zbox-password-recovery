@@ -36,8 +36,8 @@ export default class Root extends React.Component {
         this.toStep4 = this.toStep4.bind(this);
         this.finish = this.finish.bind(this);
         this.resetState = this.resetState.bind(this);
-        this.getReciever = this.getReciever.bind(this);
-        this.getRecieverType = this.getRecieverType.bind(this);
+        this.getReceiver = this.getReceiver.bind(this);
+        this.getReceiverType = this.getReceiverType.bind(this);
     }
 
     hasValidParameters(query) {
@@ -106,7 +106,7 @@ export default class Root extends React.Component {
                 };
 
                 if (state.step === 3) {
-                    state.recieverType = component.getRecieverType(state);
+                    state.receiverType = component.getReceiverType(state);
                 }
 
                 component.setState(state);
@@ -164,7 +164,7 @@ export default class Root extends React.Component {
             }, function () {
                 component.setState({
                     step: 3,
-                    recieverType: component.getRecieverType(component.state)
+                    receiverType: component.getReceiverType(component.state)
                 });
             });
         });
@@ -219,11 +219,11 @@ export default class Root extends React.Component {
             email: null,
             secondaryEmail: null,
             phone: null,
-            recieverType: null
+            receiverType: null
         })
     }
 
-    getReciever(type) {
+    getReceiver(type) {
         switch (type) {
             case "email":
                 return this.state.secondaryEmail;
@@ -239,7 +239,7 @@ export default class Root extends React.Component {
         }
     }
 
-    getRecieverType(state) {
+    getReceiverType(state) {
         if (state.secondaryEmail !== null) {
             return 'email';
         }
@@ -273,7 +273,7 @@ export default class Root extends React.Component {
             case 3:
                 return (
                     <Step3 email={this.state.email} name={this.state.name}
-                           reciever={this.getReciever(this.state.recieverType)}
+                           reciever={this.getReceiver(this.state.receiverType)}
                            onChange={this.updateFromInput} ajaxInProgress={this.state.ajaxInProgress}
                            nextStep={this.toStep4}/>
                 );
